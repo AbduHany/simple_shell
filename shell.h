@@ -32,10 +32,12 @@ int _putstr(char *str);
 char **_strtolist(char *str);
 int _strlen(char *str);
 char *_strcpy(char *dest, const char *src);
-char *_getenv(const char *name);
+char *_getenv(char *name);
 int _setenv(const char *name, const char *value, int overwrite);
 int _unsetenv(const char *name);
 pathdirs_t *create_path_list(void);
 void _freedouble(char **s);
+int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, size_t n);
 
 #endif

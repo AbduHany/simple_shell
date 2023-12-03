@@ -1,37 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "shell.h"
 
-/**
- * _getenv - gets an environment variable.
- * @name: name of the var inside the environ list.
- *
- * Return: pointer to the value string of the var defined
- * by name.
- */
-char *_getenv(const char *name)
-{
-	int i, j, flag;
-	char **env = environ;
+extern char **environ;
 
-	for (i = 0; environ[i] != NULL; i++)
-	{
-		flag = 0;
-		for (j = 0; name[j] != '\0' || env[i][j] != '='; j++)
-		{
-			if (name[j] != env[i][j])
-			{
-				flag = 1;
-				break;
-			}
-			else if (env[i][j] == '=')
-			{
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 0)
-		{
-			return (&env[i][j + 1]);
-		}
-	}
-	return (NULL);
+char* _getenv(char *var_name)
+{
+    char **envVar;
+
+    /* Search for the environment variable directly in the environ array */
+    for (envVar = environ; *envVar != NULL; ++envVar)
+    {
+        if (_strncmp(*envVar, var_name, _strlen(var_name)) == 0 && (*envVar)[_strlen(var_name)] == '=')
+        {
+            /*Found the environment variable */
+            return (*envVar + _strlen(var_name) + 1); /* +1 to skip the '=' character */
+        }
+    }
+
+    /* Environment variable not found */
+    return NULL;
 }
+
+
+/* for testing 
+int main()
+{
+    char *var_name = "PATH";
+    char *value = _getenv(var_name);
+
+    if (value != NULL) {
+        printf("Value of %s: %s\n", var_name, value);
+    } else {
+        printf("Environment variable %s not found.\n", var_name);
+    }
+
+    return 0;
+}
+*/
