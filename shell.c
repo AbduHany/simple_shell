@@ -1,6 +1,27 @@
 #include "shell.h"
 
 /**
+ * built_ins - function that handled the command whose paths are not
+ * included int he PATH environment variable
+*/
+void built_in(char **args)
+{
+	int i = 0;
+
+	char *built_ins[] = {"exit", "cd", NULL};
+	void (*fucntions[]) () = {exit_function};
+
+	while (built_ins[i] != NULL)
+	{
+		if (_strcmp(args[0],built_ins[i]) == 0)
+		{
+			(*fucntions[i])();
+			break;
+		}
+		i++;
+	}
+}
+/**
  * interloop - runs interactive REPL loop for the shell.
  * @prog: name of the running shell.
  * Return: void.
@@ -24,6 +45,7 @@ void interloop(char *prog)
 			i++;
 		input[i] = '\0';
 		args = _strtolist(input);
+		built_in(args);
 		pid = fork();
 		if (pid == -1)
 			exit(EXIT_FAILURE);
@@ -54,7 +76,7 @@ int main(__attribute__ ((unused)) int argc, char **argv, char **envp)
 {
 	pid_t pid;
 	int status;
-	char **new_argv = &argv[1];
+	char **new_argv = &argv[1]; /* gets the rest of the args, where args[1] is the start */
 
 	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
 		interloop(argv[0]);

@@ -39,5 +39,6 @@ pathdirs_t *create_path_list(void);
 void _freedouble(char **s);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
+void exit_function();
 
 #endif

@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "shell.h"
-
-extern char **environ;
-
+/**
+ * _getenv - returns the value of the given env variable
+ * @var_name: the env variable to et value of
+ * Return: the address the the beginning of the value of the
+ * passed env variable
+*/
 char* _getenv(char *var_name)
 {
     char **envVar;
