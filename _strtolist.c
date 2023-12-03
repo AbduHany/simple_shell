@@ -10,9 +10,9 @@
 char **_strtolist(char *str)
 {
 	char **str_arr = NULL;
-	char *buffer = NULL;
+	char *buffer = NULL, *temp;
 	char *delim = " ";
-	int i = 0;
+	int i = 0, j;
 
 	while (1)
 	{
@@ -22,9 +22,19 @@ char **_strtolist(char *str)
 		buffer = strtok(str, delim);
 		if (buffer == NULL)
 			break;
-		str_arr[i] = buffer;
+		temp = malloc(sizeof(char) * (_strlen(buffer) + 1));
+		if (temp == NULL)
+		{
+			for (j = i - 1; j >= 0; j--)
+			{
+				free(str_arr[j]);
+			}
+		}
+		_strcpy(temp, buffer);
+		str_arr[i] = temp;
 		i++;
 		str = NULL;
+		temp = NULL;
 	}
 	str_arr[i] = NULL;
 	return (str_arr);
