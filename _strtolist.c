@@ -1,41 +1,92 @@
 #include "shell.h"
 
 /**
- * _strtolist - takes a string and tokenizes it
- * creating an array of token strings.
- * @str: string to be tokenized.
+ * assign_mem - assigns memory space for word characters.
+ * @words: the double pointer to the words array.
+ * @word_count: number of words.
+ * @str: the string of original words.
  *
- * Return: double pointer to the array of tokens.
+ * Return: void.
+ */
+void assign_mem(char **words, int word_count, char *str)
+{
+	int i, wlen, j;
+
+	for (i = 0, j = 0, wlen = 0; str[i] != '\0'; i++)
+	{
+		if (j == word_count)
+			return;
+		if (str[i] != ' ')
+		{
+			wlen++;
+			if (str[i + 1] == ' ' || str[i + 1] == '\0')
+			{
+				words[j] = (char *) malloc((wlen + 1) * sizeof(char));
+				j++;
+				wlen = 0;
+			}
+		}
+	}
+}
+
+/**
+ * countwords - counts number of space separated words
+ * in a string.
+ * @str: pointer to string to be counted.
+ *
+ * Return: number of words
+ */
+int countwords(char *str)
+{
+	int i, word_count;
+
+	word_count = 0;
+	for (i = 1; str[i] != '\0'; i++)
+	{
+		if (str[i] == ' ' || str[i + 1] == '\0')
+		{
+			if (str[i - 1] != ' ')
+				word_count++;
+			else
+				continue;
+		}
+	}
+	return (word_count);
+}
+/**
+ * _strtolist - splits a string into words.
+ * @str: pointer to string to be split.
+ *
+ * Return: a double char pointer to the array of words.
  */
 char **_strtolist(char *str)
 {
-	char **str_arr = NULL;
-	char *buffer = NULL, *temp;
-	char *delim = " ";
-	int i = 0, j;
+	int word_count, i, j, k;
+	char **words;
 
-	while (1)
+	if (str == NULL || *str == '\0')
+		return (NULL);
+	word_count = countwords(str);
+	if (word_count == 0)
+		return (NULL);
+	words = malloc((word_count + 1) * sizeof(char *));
+	if (words == NULL)
+		return (NULL);
+	assign_mem(words, word_count, str);
+	for (i = 0, j = 0, k = 0; str[i] != '\0'; i++)
 	{
-		str_arr = realloc(str_arr, sizeof(char *) * (i + 1));
-		if (str_arr == NULL)
-			return (NULL);
-		buffer = strtok(str, delim);
-		if (buffer == NULL)
-			break;
-		temp = malloc(sizeof(char) * (_strlen(buffer) + 1));
-		if (temp == NULL)
+		if (str[i] != ' ')
 		{
-			for (j = i - 1; j >= 0; j--)
+			words[j][k] = str[i];
+			k++;
+			if (str[i + 1] == ' ' || str[i + 1] == '\0')
 			{
-				free(str_arr[j]);
+				words[j][k] = '\0';
+				k = 0;
+				j++;
 			}
 		}
-		_strcpy(temp, buffer);
-		str_arr[i] = temp;
-		i++;
-		str = NULL;
-		temp = NULL;
 	}
-	str_arr[i] = NULL;
-	return (str_arr);
+	words[word_count] = NULL;
+	return (words);
 }

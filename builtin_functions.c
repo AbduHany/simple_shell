@@ -1,6 +1,10 @@
 #include "shell.h"
 
-void exit_function()
+/**
+ * exit_function - exits the shell.
+ * Return: void.
+ */
+void exit_function(void)
 {
-    exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }
