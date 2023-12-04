@@ -1,4 +1,28 @@
 #include "shell.h"
+void execute_command(char **args)
+{	
+	pid_t pid;
+	int wstatus;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		execve(args[0], args, environ);
+		perror("Execve");
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		wait(&wstatus);
+		_freedouble(args);
+	}
+}
+
 int find_in_PATH(char **args)
 {
 	pathdirs_t *list_ptr;
@@ -64,8 +88,6 @@ void interloop(__attribute__ ((unused)) char *prog)
 {
 	char **args;
 	char *command_name;
-	pid_t pid;
-	int wstatus;
 	int builtin_flag;
 	int found_in_PATH_flag = 0;
 
@@ -83,42 +105,26 @@ void interloop(__attribute__ ((unused)) char *prog)
 		}
 		else
 		{
+			if (access(args[0], X_OK | F_OK) == 0)
+			{
+				execute_command(args);
+				continue;
+			}
 			command_name = args[0]; 
 			found_in_PATH_flag = find_in_PATH(args);
-		}
-		/*if (access(args[0], X_OK | F_OK) == -1)
-		{
-			perror("Access");
-			continue;
-		}*/
-
-		if (found_in_PATH_flag == 1)
-		{
-			pid = fork();
-			if (pid == -1)
+			if (found_in_PATH_flag == 1)
 			{
-				perror("Fork");
-				exit(EXIT_FAILURE);
-			}
-			else if (pid == 0)
-			{
-				execve(args[0], args, environ);
-				perror("Execve");
-				exit(EXIT_FAILURE);
-			}
+				execute_command(args);
+				continue;
+			}	
 			else
 			{
-				wait(&wstatus);
+				command_not_found(command_name);
 				_freedouble(args);
+				continue;
 			}
-		}	
-		else
-		{
-			command_not_found(command_name);
-			_freedouble(args);
-			continue;
 		}
-		
+
 	}
 	
 	exit(EXIT_SUCCESS);

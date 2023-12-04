@@ -48,4 +48,6 @@ int built_in(char **args);
 char **initargs(void);
 void command_not_found(char *command_name);
 ssize_t _getline(char **input, size_t *len, FILE *stream);
+void execute_command(char **args);
+int find_in_PATH(char **args);
 #endif
