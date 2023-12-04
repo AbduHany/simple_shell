@@ -43,6 +43,7 @@ int _strncmp(char *s1, char *s2, size_t n);
 void exit_function(void);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_strtolist(char *str);
-
+void built_in(char **args);
+char **initargs(void);
 
 #endif
