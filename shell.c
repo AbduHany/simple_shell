@@ -13,7 +13,7 @@ void built_in(char **args)
 
 	while (built_ins[i] != NULL)
 	{
-		if (_strcmp(args[0],built_ins[i]) == 0)
+		if (_strcmp(args[0], built_ins[i]) == 0)
 		{
 			(*fucntions[i])();
 			break;
@@ -34,32 +34,89 @@ void interloop(char *prog)
 	pid_t pid;
 	int i, wstatus;
 
+	(void)prog;
 	while (1)
 	{
 		input = NULL;
+		args = NULL;
 		_putstr("($) ");
 		readbytes = getline(&input, &size, stdin);
 		if (readbytes == -1)
-			break;
+		{
+			exit(127);
+		}
 		for (i = 0; input[i] != '\n';)
-			i++;
+		i++;
 		input[i] = '\0';
 		args = _strtolist(input);
+		free(input);
+		if (args == NULL) /* if input is empty */
+			continue;
 		built_in(args);
 		pid = fork();
 		if (pid == -1)
+		{
+			perror("fork");
 			exit(EXIT_FAILURE);
+		}
 		else if (pid == 0)
 		{
 			execve(args[0], args, environ);
-		        perror(prog);
+			perror("execve");
+			exit(EXIT_FAILURE);
 		}
 		else
 		{
 			wait(&wstatus);
 		}
-		free(input);
+		_freedouble(args);
 	}
+	_freedouble(args);
+	exit(EXIT_SUCCESS);
+}
+
+/**
+ * noninter - executes shell in non-interactive mode.
+ * @prog: name of the running shell.
+ * Return: void.
+ */
+void noninter(char *prog)
+{
+	char *input = NULL, **args;
+	size_t size;
+	ssize_t readbytes;
+	pid_t pid;
+	int wstatus;
+	int i;
+
+	(void)prog;
+	readbytes = getline(&input, &size, stdin);
+	if (readbytes == -1)
+	{
+		perror("getline");
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; input[i] != '\n';)
+		i++;
+	 input[i] = '\0';
+	args = _strtolist(input);
+	built_in(args);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror(prog);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		execve(args[0], args, environ);
+		perror(prog);
+		exit(EXIT_FAILURE);
+	}
+	else
+		wait(&wstatus);
+	free(input);
+	_freedouble(args);
 	exit(EXIT_SUCCESS);
 }
 
@@ -72,31 +129,11 @@ void interloop(char *prog)
  * Return: 0 on success
  * on error, a different value.
  */
-int main(__attribute__ ((unused)) int argc, char **argv, char **envp)
+int main(__attribute__ ((unused)) int argc, char **argv)
 {
-	pid_t pid;
-	int status;
-	char **new_argv = &argv[1]; /* gets the rest of the args, where args[1] is the start */
-
-	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
+	if (isatty(STDIN_FILENO)) /* interactive mode */
 		interloop(argv[0]);
-	else
-	{
-		pid = fork();
-		if (pid == -1)
-		{
-			perror(argv[0]);
-			exit(EXIT_FAILURE);
-		}
-		else if (pid == 0)
-		{
-			if(execve(new_argv[0], new_argv, envp) == -1)
-			{
-				perror(argv[0]);
-				exit(EXIT_FAILURE);
-			}
-		}
-		wait(&status);
-	}
+	else /* non-interactive mode */
+		noninter(argv[0]);
 	return (0);
 }
