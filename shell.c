@@ -78,52 +78,6 @@ void interloop(__attribute__ ((unused)) char *prog)
 	_freedouble(args);
 	exit(EXIT_SUCCESS);
 }
-
-/**
- * noninter - executes shell in non-interactive mode.
- * @prog: name of the running shell.
- * Return: void.
- */
-void noninter(char *prog)
-{
-	char *input = NULL, **args;
-	size_t size;
-	ssize_t readbytes;
-	pid_t pid;
-	int wstatus;
-	int i;
-
-	(void)prog;
-	readbytes = getline(&input, &size, stdin);
-	if (readbytes == -1)
-	{
-		perror("getline");
-		exit(EXIT_FAILURE);
-	}
-	for (i = 0; input[i] != '\n';)
-		i++;
-	 input[i] = '\0';
-	args = _strtolist(input);
-	built_in(args);
-	pid = fork();
-	if (pid == -1)
-	{
-		perror(prog);
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		execve(args[0], args, environ);
-		perror(prog);
-		exit(EXIT_FAILURE);
-	}
-	else
-		wait(&wstatus);
-	free(input);
-	_freedouble(args);
-	exit(EXIT_SUCCESS);
-}
-
 /**
  * noninter - executes shell in non-interactive mode.
  * @prog: name of the running shell.
