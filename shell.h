@@ -40,9 +40,12 @@ void _freedouble(char **s);
 void _freepathlist(pathdirs_t *head);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
-void exit_function(void);
+void exit_function(char **args);
+void print_env(char **args);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_strtolist(char *str);
-
-
+int built_in(char **args);
+char **initargs(void);
+void command_not_found(char *command_name);
+ssize_t _getline(char **input, size_t *len, FILE *stream);
 #endif

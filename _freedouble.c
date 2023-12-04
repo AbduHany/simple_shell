@@ -17,4 +17,5 @@ void _freedouble(char **s)
 		free(s[i]);
 		i++;
 	}
+	free(s);
 }

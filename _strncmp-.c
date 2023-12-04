@@ -10,15 +10,23 @@
 */
 int compare(char *s1, char *s2, size_t n)
 {
-	int i;
+	size_t i;
+	int result;
 
 	for (i = 0; i < n ; i++)
 	{
 		if (s1[i] > s2[i])
-			return (1);
+		{
+			result = (1);
+			break;
+		}
 		else if (s1[i] < s2[i])
-			return (-1);
+		{
+			result = (-1);
+			break;
+		}
 	}
+	return (result);
 }
 /**
  * _strncmp - compares the 2 strings s1 and s upto n charecters
@@ -29,29 +37,31 @@ int compare(char *s1, char *s2, size_t n)
 */
 int _strncmp(char *s1, char *s2, size_t n)
 {
-	size_t len_s1 = _strlen(s1), len_s2 = _strlen(s2), i;
+	size_t len_s1 = _strlen(s1), len_s2 = _strlen(s2);
+	int result;
 
 	if (len_s1 >= n && len_s2 >= n)
 	{
 		compare(s1, s2, n);
-		return  (0);
+		result = (0);
 	}
 	else
 	{
 		if (len_s1 == len_s2)
 		{
 			compare(s1, s2, len_s1);
-			return (0);
+			result = (0);
 		}
 		else if (len_s1 > len_s2)
 		{
 			compare(s1, s2, len_s2);
-			return (1);
+			result = (1);
 		}
 		else
 		{
 			compare(s1, s2, len_s1);
-			return (-1);
+			result = (-1);
 		}
 	}
+	return (result);
 }

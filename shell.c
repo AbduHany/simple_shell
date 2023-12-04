@@ -1,25 +1,60 @@
 #include "shell.h"
-/**
- * built_ins - function that handled the command whose paths are not
- * included int he PATH environment variable
-*/
-void built_in(char **args)
+int find_in_PATH(char **args)
 {
-	int i = 0;
+	pathdirs_t *list_ptr;
+	int flag = 0;
+	char *full_path;
 
-	char *built_ins[] = {"exit", "cd", NULL};
-	void (*fucntions[]) () = {exit_function};
-
-	while (built_ins[i] != NULL)
+	list_ptr = create_path_list();
+	
+	while (list_ptr != NULL) 
 	{
-		if (_strcmp(args[0], built_ins[i]) == 0)
+		full_path = malloc(_strlen((list_ptr->dir)) + _strlen(args[0]) + 1 + 1);
+		_strcpy(full_path, (list_ptr->dir));
+		full_path = strcat(full_path, "/");
+		full_path = strcat(full_path, args[0]);
+
+
+		if (access(full_path, X_OK | F_OK) == 0)
 		{
-			(*fucntions[i])();
+			free(args[0]);
+			args[0] = full_path;
+			flag = 1;
 			break;
 		}
-		i++;
+		free(full_path);
+		list_ptr =list_ptr->next;
 	}
+	return (flag);
 }
+
+/**
+ * initargs - reads input string from stdin
+ * and creats the args string array.
+ * Return: double pointer to the args array.
+ */
+char **initargs(void)
+{
+	char **args = NULL, *input = NULL;
+	size_t size;
+	ssize_t readbytes;
+	int i;
+
+	readbytes = getline(&input, &size, stdin);
+	if (readbytes == -1)
+		exit(EXIT_FAILURE);
+	if (input == NULL) /* input is empty */
+		return (NULL);
+	for (i = 0; input[i] != '\n';)
+		i++;
+	input[i] = '\0';
+	args = _strtolist(input);
+	if (args == NULL || args[0] == NULL)
+		return (NULL);
+	free(input);
+	return (args);
+}
+
 /**
  * interloop - runs interactive REPL loop for the shell.
  * @prog: name of the running shell.
@@ -27,57 +62,68 @@ void built_in(char **args)
  */
 void interloop(__attribute__ ((unused)) char *prog)
 {
-	char **args, *input;
-	size_t size;
-	ssize_t readbytes;
+	char **args;
+	char *command_name;
 	pid_t pid;
-	int i, wstatus;
+	int wstatus;
+	int builtin_flag;
+	int found_in_PATH_flag = 0;
 
-	(void)prog;
 	while (1)
 	{
-		input = NULL;
-		args = NULL;
 		_putstr("($) ");
-		readbytes = getline(&input, &size, stdin);
-		if (readbytes == -1)
-			exit(EXIT_FAILURE);
-		for (i = 0; input[i] != '\n';)
-		i++;
-		input[i] = '\0';
-		args = _strtolist(input);
-		free(input);
+		args = initargs();
 		if (args == NULL || args[0] == NULL)
 			continue;
-		built_in(args);
-		if (access(args[0], X_OK | F_OK) == -1)
+		builtin_flag = built_in(args); 
+		if (builtin_flag == 1)
 		{
-			perror("Access");
-			continue;  /* Skip to the next iteration of the loop */
-		}
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid == 0)
-		{
-			execve(args[0], args, environ);
-			perror("execve");
-			exit(EXIT_FAILURE);
+			_freedouble(args);
+			continue;
 		}
 		else
 		{
-			wait(&wstatus);
-			_freedouble(args);
+			command_name = args[0]; 
+			found_in_PATH_flag = find_in_PATH(args);
 		}
+		/*if (access(args[0], X_OK | F_OK) == -1)
+		{
+			perror("Access");
+			continue;
+		}*/
 
-		_freedouble(args);
+		if (found_in_PATH_flag == 1)
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("Fork");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
+			{
+				execve(args[0], args, environ);
+				perror("Execve");
+				exit(EXIT_FAILURE);
+			}
+			else
+			{
+				wait(&wstatus);
+				_freedouble(args);
+			}
+		}	
+		else
+		{
+			command_not_found(command_name);
+			_freedouble(args);
+			continue;
+		}
+		
 	}
-	_freedouble(args);
+	
 	exit(EXIT_SUCCESS);
 }
+
 /**
  * noninter - executes shell in non-interactive mode.
  * @prog: name of the running shell.
@@ -85,22 +131,11 @@ void interloop(__attribute__ ((unused)) char *prog)
  */
 void noninter(__attribute__ ((unused)) char *prog)
 {
-	char *input = NULL, **args = NULL;
-	size_t size;
-	ssize_t readbytes;
+	char **args;
 	pid_t pid;
-	int wstatus, i;
+	int wstatus;
 
-	readbytes = getline(&input, &size, stdin);
-	if (readbytes == -1)
-	{
-		perror("getline");
-		exit(EXIT_FAILURE);
-	}
-	for (i = 0; input[i] != '\n';)
-		i++;
-	input[i] = '\0';
-	args = _strtolist(input);
+	args = initargs();
 	built_in(args);
 	if (access(args[0], X_OK | F_OK) == -1)
 	{
@@ -120,11 +155,13 @@ void noninter(__attribute__ ((unused)) char *prog)
 		exit(EXIT_FAILURE);
 	}
 	else
+	{
 		wait(&wstatus);
-	free(input);
-	_freedouble(args);
+		_freedouble(args);
+	}
 	exit(EXIT_SUCCESS);
 }
+
 /**
  * main - entry point.
  * @argc: number of arguments.
@@ -136,9 +173,11 @@ void noninter(__attribute__ ((unused)) char *prog)
  */
 int main(__attribute__ ((unused)) int argc, char **argv)
 {
-	if (isatty(STDIN_FILENO)) /* interactive mode */
+	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
 		interloop(argv[0]);
-	else /* non-interactive mode */
+	else
+	{
 		noninter(argv[0]);
+	}
 	return (0);
 }

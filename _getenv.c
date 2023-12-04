@@ -1,23 +1,37 @@
 #include "shell.h"
-/**
- * _getenv - returns the value of the given env variable
- * @var_name: the env variable to et value of
- * Return: the address the the beginning of the value of the
- * passed env variable
-*/
-char *_getenv(char *var_name)
-{
-	char **envVar;
 
-	/* Search for the environment variable directly in the environ array */
-	for (envVar = environ; *envVar != NULL; ++envVar)
-	{
-		if (_strncmp(*envVar, var_name, _strlen(var_name)) == 0
-		    && (*envVar)[_strlen(var_name)] == '=')
-		{
-			/*Found the environment variable */
-			return (*envVar + _strlen(var_name) + 1);/*skip = char*/
-		}
-	}
-	return (NULL); /* Environment variable not found */
+/**
+ * _getenv - gets an environment variable.
+ * @name: name of the var inside the environ list.
+ *
+ * Return: pointer to the value string of the var defined
+ * by name.
+ */
+char *_getenv(char *name)
+{
+        int i, j, flag;
+        char **env = environ;
+
+        for (i = 0; environ[i] != NULL; i++)
+        {
+                flag = 0;
+                for (j = 0; name[j] != '\0' || env[i][j] != '='; j++)
+                {
+                        if (name[j] != env[i][j])
+                        {
+                                flag = 1;
+                                break;
+                        }
+                        else if (env[i][j] == '=')
+                        {
+                                flag = 1;
+                                break;
+                        }
+                }
+                if (flag == 0)
+                {
+                        return (&env[i][j + 1]);
+                }
+        }
+        return (NULL);
 }
