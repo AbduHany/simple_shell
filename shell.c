@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * built_ins - function that handled the command whose paths are not
  * included int he PATH environment variable
@@ -26,7 +25,7 @@ void built_in(char **args)
  * @prog: name of the running shell.
  * Return: void.
  */
-void interloop(char *prog)
+void interloop(__attribute__ ((unused)) char *prog)
 {
 	char **args, *input;
 	size_t size;
@@ -42,17 +41,20 @@ void interloop(char *prog)
 		_putstr("($) ");
 		readbytes = getline(&input, &size, stdin);
 		if (readbytes == -1)
-		{
-			exit(127);
-		}
+			exit(EXIT_FAILURE);
 		for (i = 0; input[i] != '\n';)
 		i++;
 		input[i] = '\0';
 		args = _strtolist(input);
 		free(input);
-		if (args == NULL) /* if input is empty */
+		if (args == NULL || args[0] == NULL)
 			continue;
 		built_in(args);
+		if (access(args[0], X_OK | F_OK) == -1)
+		{
+			perror("Access");
+			continue;  /* Skip to the next iteration of the loop */
+		}
 		pid = fork();
 		if (pid == -1)
 		{
@@ -68,7 +70,9 @@ void interloop(char *prog)
 		else
 		{
 			wait(&wstatus);
+			_freedouble(args);
 		}
+
 		_freedouble(args);
 	}
 	_freedouble(args);
@@ -120,6 +124,53 @@ void noninter(char *prog)
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ * noninter - executes shell in non-interactive mode.
+ * @prog: name of the running shell.
+ * Return: void.
+ */
+void noninter(__attribute__ ((unused)) char *prog)
+{
+	char *input = NULL, **args = NULL;
+	size_t size;
+	ssize_t readbytes;
+	pid_t pid;
+	int wstatus, i;
+
+	readbytes = getline(&input, &size, stdin);
+	if (readbytes == -1)
+	{
+		perror("getline");
+		exit(EXIT_FAILURE);
+	}
+	for (i = 0; input[i] != '\n';)
+		i++;
+	input[i] = '\0';
+	args = _strtolist(input);
+	built_in(args);
+	if (access(args[0], X_OK | F_OK) == -1)
+	{
+		perror("access");
+		exit(EXIT_FAILURE);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror(prog);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		execve(args[0], args, environ);
+		perror(prog);
+		exit(EXIT_FAILURE);
+	}
+	else
+		wait(&wstatus);
+	free(input);
+	_freedouble(args);
+	exit(EXIT_SUCCESS);
+}
 /**
  * main - entry point.
  * @argc: number of arguments.

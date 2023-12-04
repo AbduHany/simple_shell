@@ -34,7 +34,7 @@ int _strncmp(char *s1, char *s2, size_t n)
 	if (len_s1 >= n && len_s2 >= n)
 	{
 		compare(s1, s2, n);
-		return (0);
+		return  (0);
 	}
 	else
 	{
