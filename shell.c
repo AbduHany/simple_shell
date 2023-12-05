@@ -117,32 +117,36 @@ void interloop(__attribute__ ((unused)) char *prog)
 void noninter(__attribute__ ((unused)) char *prog)
 {
 	char **args;
-	pid_t pid;
-	int wstatus;
+	char *command_name;
+	int builtin_flag, found_in_PATH_flag = 0;
 
 	args = initargs();
-	built_in(args);
-	if (access(args[0], X_OK | F_OK) == -1)
-	{
-		perror("access");
-		exit(EXIT_FAILURE);
-	}
-	pid = fork();
-	if (pid == -1)
-	{
-		perror(prog);
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		execve(args[0], args, environ);
-		perror(prog);
-		exit(EXIT_FAILURE);
-	}
+	if (args == NULL || args[0] == NULL)
+		exit(EXIT_SUCCESS);
+	builtin_flag = built_in(args);
+	if (builtin_flag == 1)
+		_freedouble(args);
+
 	else
 	{
-		wait(&wstatus);
-		_freedouble(args);
+		if (access(args[0], X_OK | F_OK) == 0)
+		{
+			execute_command(args);
+			exit(EXIT_SUCCESS);
+		}
+		command_name = args[0];
+		found_in_PATH_flag = find_in_PATH(args);
+		if (found_in_PATH_flag == 1)
+		{
+			execute_command(args);
+			exit(EXIT_SUCCESS);
+		}
+		else
+		{
+			command_not_found(command_name);
+			_freedouble(args);
+			exit(EXIT_SUCCESS);
+		}
 	}
 	exit(EXIT_SUCCESS);
 }

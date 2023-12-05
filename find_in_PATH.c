@@ -18,8 +18,8 @@ int find_in_PATH(char **args)
 	{
 		full_path = malloc(_strlen((list_ptr->dir)) + _strlen(args[0]) + 1 + 1);
 		_strcpy(full_path, (list_ptr->dir));
-		full_path = strcat(full_path, "/");
-		full_path = strcat(full_path, args[0]);
+		full_path = _strcat(full_path, "/");
+		full_path = _strcat(full_path, args[0]);
 		if (access(full_path, X_OK | F_OK) == 0)
 		{
 			free(args[0]);

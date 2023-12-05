@@ -35,6 +35,7 @@ int _strlen(char *str);
 char *_strcpy(char *dest, const char *src);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
+char* _strcat(char *s1, char *s2);
 
 /* environment variable functions */
 char *_getenv(char *name);
