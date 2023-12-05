@@ -42,7 +42,7 @@ char **initargs(void)
 	ssize_t readbytes;
 	int i;
 
-	readbytes = getline(&input, &size, stdin);
+	readbytes = _getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
 		write(STDOUT_FILENO, "\n", 1);
