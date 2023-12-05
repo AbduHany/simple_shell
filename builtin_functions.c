@@ -1,4 +1,6 @@
 #include "shell.h"
+#include <libgen.h>
+#include <unistd.h>
 
 /**
  * built_in - function that handled the command whose paths are not
@@ -11,9 +13,9 @@ int built_in(char **args)
 {
 	int i = 0;
 	int flag = 0;
-	char *built_ins[] = {"exit", "env", NULL};
+	char *built_ins[] = {"exit", "env", "cd", "pwd", NULL};
 
-	void (*fucntions[]) (char **argu) = {exit_function, print_env, NULL};
+	void (*fucntions[]) (char **argu) = {exit_function, print_env, cd, pwd, NULL};
 	while (built_ins[i] != NULL)
 	{
 		if (_strcmp(args[0], built_ins[i]) == 0)
@@ -56,3 +58,33 @@ void print_env(char **args)
 		i++;
 	}
 }
+/**
+ * cd - chnages current dir
+ * @args: the arguments of given command.
+ * Return: void
+ */
+void cd(char **args)
+{
+	int state;
+
+	state = chdir(args[1]);
+	if (state != 0)
+		perror("cd:");
+}
+/**
+ * pwd - prints the current dir.
+ * @args: the arguments of given command.
+ * Return: void
+ */
+void pwd(__attribute__ ((unused)) char **args)
+{
+	char *dir_name = malloc(1024);
+
+	if (getcwd(dir_name, 1024) == NULL)
+		perror("pwd:");
+	write(1, dir_name, strlen(dir_name) + 1);
+	free(dir_name);
+}
+
+
+

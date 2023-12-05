@@ -46,6 +46,8 @@ int _unsetenv(const char *name);
 void print_env(char **args);
 void exit_function(char **args);
 int built_in(char **args);
+void cd(char **args);
+void pwd(__attribute__ ((unused)) char **args);
 
 /* memory functions */
 void _freedouble(char **s);
