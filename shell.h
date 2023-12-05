@@ -27,27 +27,37 @@ typedef struct pathdirs
 	struct pathdirs *next;
 } pathdirs_t;
 
+/* string functions */
 int _putchar(char c);
 int _putstr(char *str);
 char **_strtolist(char *str);
 int _strlen(char *str);
 char *_strcpy(char *dest, const char *src);
+int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, size_t n);
+
+/* environment variable functions */
 char *_getenv(char *name);
 int _setenv(const char *name, const char *value, int overwrite);
 int _unsetenv(const char *name);
-pathdirs_t *create_path_list(void);
+
+/* built in commands */
+void print_env(char **args);
+void exit_function(char **args);
+int built_in(char **args);
+
+/* memory functions */
 void _freedouble(char **s);
 void _freepathlist(pathdirs_t *head);
-int _strcmp(char *s1, char *s2);
-int _strncmp(char *s1, char *s2, size_t n);
-void exit_function(char **args);
-void print_env(char **args);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+
+/* shell.c main functions */
 char **_strtolist(char *str);
-int built_in(char **args);
 char **initargs(void);
 void command_not_found(char *command_name);
 ssize_t _getline(char **input, size_t *len, FILE *stream);
 void execute_command(char **args);
-int find_in_PATH(char **args);
+int find_in_PATH(char **args)
+pathdirs_t *create_path_list(void);
+
 #endif

@@ -1,6 +1,13 @@
 #include "shell.h"
+
+/**
+ * execute_command - creates a child process and executes command.
+ * @args: array of argument strings to command.
+ *
+ * Return: void.
+ */
 void execute_command(char **args)
-{	
+{
 	pid_t pid;
 	int wstatus;
 
@@ -23,35 +30,6 @@ void execute_command(char **args)
 	}
 }
 
-int find_in_PATH(char **args)
-{
-	pathdirs_t *list_ptr;
-	int flag = 0;
-	char *full_path;
-
-	list_ptr = create_path_list();
-	
-	while (list_ptr != NULL) 
-	{
-		full_path = malloc(_strlen((list_ptr->dir)) + _strlen(args[0]) + 1 + 1);
-		_strcpy(full_path, (list_ptr->dir));
-		full_path = strcat(full_path, "/");
-		full_path = strcat(full_path, args[0]);
-
-
-		if (access(full_path, X_OK | F_OK) == 0)
-		{
-			free(args[0]);
-			args[0] = full_path;
-			flag = 1;
-			break;
-		}
-		free(full_path);
-		list_ptr =list_ptr->next;
-	}
-	return (flag);
-}
-
 /**
  * initargs - reads input string from stdin
  * and creats the args string array.
@@ -66,7 +44,12 @@ char **initargs(void)
 
 	readbytes = getline(&input, &size, stdin);
 	if (readbytes == -1)
-		exit(EXIT_FAILURE);
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		if (input)
+			free(input);
+		exit(EXIT_SUCCESS);
+	}
 	if (input == NULL) /* input is empty */
 		return (NULL);
 	for (i = 0; input[i] != '\n';)
@@ -86,10 +69,8 @@ char **initargs(void)
  */
 void interloop(__attribute__ ((unused)) char *prog)
 {
-	char **args;
-	char *command_name;
-	int builtin_flag;
-	int found_in_PATH_flag = 0;
+	char **args, *command_name;
+	int builtin_flag, found_in_PATH_flag = 0;
 
 	while (1)
 	{
@@ -97,7 +78,7 @@ void interloop(__attribute__ ((unused)) char *prog)
 		args = initargs();
 		if (args == NULL || args[0] == NULL)
 			continue;
-		builtin_flag = built_in(args); 
+		builtin_flag = built_in(args);
 		if (builtin_flag == 1)
 		{
 			_freedouble(args);
@@ -110,13 +91,13 @@ void interloop(__attribute__ ((unused)) char *prog)
 				execute_command(args);
 				continue;
 			}
-			command_name = args[0]; 
+			command_name = args[0];
 			found_in_PATH_flag = find_in_PATH(args);
 			if (found_in_PATH_flag == 1)
 			{
 				execute_command(args);
 				continue;
-			}	
+			}
 			else
 			{
 				command_not_found(command_name);
@@ -124,9 +105,7 @@ void interloop(__attribute__ ((unused)) char *prog)
 				continue;
 			}
 		}
-
 	}
-	
 	exit(EXIT_SUCCESS);
 }
 

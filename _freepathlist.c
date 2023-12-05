@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * free_list - frees a pathdirs_t list.
+ * _freepathlist - frees a pathdirs_t list.
  * @head: head of linked list of pathdirs_t nodes.
  *
  * Return: void.
