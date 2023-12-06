@@ -9,11 +9,12 @@
  */
 int find_in_PATH(char **args)
 {
-	pathdirs_t *list_ptr;
+	pathdirs_t *list_ptr, *head;
 	int flag = 0;
 	char *full_path;
 
 	list_ptr = create_path_list();
+	head = list_ptr;
 	while (list_ptr != NULL)
 	{
 		full_path = malloc(_strlen((list_ptr->dir)) + _strlen(args[0]) + 1 + 1);
@@ -30,5 +31,6 @@ int find_in_PATH(char **args)
 		free(full_path);
 		list_ptr = list_ptr->next;
 	}
+	_freepathlist(head);
 	return (flag);
 }

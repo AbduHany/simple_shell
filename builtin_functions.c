@@ -83,8 +83,6 @@ void pwd(__attribute__ ((unused)) char **args)
 	if (getcwd(dir_name, 1024) == NULL)
 		perror("pwd:");
 	write(1, dir_name, strlen(dir_name) + 1);
+	_putchar('\n');
 	free(dir_name);
 }
-
-
-

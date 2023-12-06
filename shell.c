@@ -15,6 +15,7 @@ void execute_command(char **args)
 	if (pid == -1)
 	{
 		perror("fork");
+		free(args);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
@@ -42,7 +43,7 @@ char **initargs(void)
 	ssize_t readbytes;
 	int i;
 
-	readbytes = _getline(&input, &size, stdin);
+	readbytes = getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
 		write(STDOUT_FILENO, "\n", 1);
@@ -50,8 +51,12 @@ char **initargs(void)
 			free(input);
 		exit(EXIT_SUCCESS);
 	}
-	if (input == NULL) /* input is empty */
+	if (input[0] == '\n') /* input is empty */
+	{
+		if (input)
+			free(input);
 		return (NULL);
+	}
 	for (i = 0; input[i] != '\n';)
 		i++;
 	input[i] = '\0';

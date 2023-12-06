@@ -29,7 +29,6 @@ ssize_t _getline(char **input, size_t *len, FILE *stream)
 		buffer[i] = fgetc(stream);
 		if (buffer[i] == '\n')
 		{
-			buffer[i] = '\0';
 			break;
 		}
 		i++;
