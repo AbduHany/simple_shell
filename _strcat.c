@@ -1,24 +1,25 @@
 #include "shell.h"
+
 /**
- * _strcat - concatinates two strings
- * @s1: destination string
- * @s2: source string
- * Return: pointer to string where s2 is appended to s1.
-*/
-char* _strcat(char *s1, char *s2)
+ * _strcat - concatenates two strings.
+ * @s1: pointer of destination string concatenation.
+ * @s2: pointer of source string concatenation.
+ *
+ * Return: Char pointer to concatenated string.
+ */
+char *_strcat(char *s1, char *s2)
 {
-    char* result;
-    int len_s1 = _strlen(s1);
-    int len_s2 = _strlen(s2);
-    int i, j;
+	int i, len;
 
-    result = malloc(sizeof(char) * (len_s1 + len_s2 +1));
-
-    for (i = 0; i < len_s1; i++)
-        result[i] = s1[i];
-    
-    for (j = 0; j < (len_s2 + 1); j++)
-        result[i + j] = s2[j];
-    
-    return (result);
+	len = 0;
+	for (i = 0; s1[i] != '\0'; i++)
+	{
+		len++;
+	}
+	for (i = 0; s2[i] != '\0'; i++)
+	{
+		s1[len + i] = s2[i];
+	}
+	s1[len + i] = '\0';
+	return (s1);
 }
