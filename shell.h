@@ -30,7 +30,7 @@ typedef struct pathdirs
 /* string functions */
 int _putchar(char c);
 int _putstr(char *str);
-char **_strtolist(char *str);
+char **_strtolist(char *str, char delim);
 int _strlen(char *str);
 char *_strcpy(char *dest, const char *src);
 int _strcmp(char *s1, char *s2);
@@ -55,7 +55,6 @@ void _freepathlist(pathdirs_t *head);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 
 /* shell.c main functions */
-char **_strtolist(char *str);
 char **initargs(void);
 void command_not_found(char *command_name);
 ssize_t _getline(char **input, size_t *len, FILE *stream);

@@ -47,22 +47,23 @@ char **initargs(void)
 	if (readbytes == -1)
 	{
 		write(STDOUT_FILENO, "\n", 1);
-		if (input)
-			free(input);
+		free(input);
 		exit(EXIT_SUCCESS);
 	}
 	if (input[0] == '\n') /* input is empty */
 	{
-		if (input)
-			free(input);
+		free(input);
 		return (NULL);
 	}
 	for (i = 0; input[i] != '\n';)
 		i++;
 	input[i] = '\0';
-	args = _strtolist(input);
+	args = _strtolist(input, ' ');
 	if (args == NULL || args[0] == NULL)
+	{
+		free(input);
 		return (NULL);
+	}
 	free(input);
 	return (args);
 }

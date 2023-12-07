@@ -20,6 +20,28 @@ int calcdirnum(char *val)
 }
 
 /**
+ * _freeall - frees the tmpstr, new node pointer and
+ * linked list through the head pointer.
+ * @tmplist: array of strings of tokens.
+ * @tmpstr: pointer to the path string.
+ * @new: pathdirs_t pointer to the new node.
+ * @head: pathdirs_t pointer to the head of the list.
+ *
+ * Return: void.
+ */
+void _freeall(char **tmplist, char *tmpstr, pathdirs_t *new, pathdirs_t *head)
+{
+	if (tmplist)
+		_freedouble(tmplist);
+	if (tmpstr)
+		free(tmpstr);
+	if (new)
+		free(new);
+	if (head)
+		_freepathlist(head);
+}
+
+/**
  * create_path_list - builds a linked list of the PATH directories.
  *
  * Return: head pointer to the first node/struct_pathdir in the
@@ -28,33 +50,30 @@ int calcdirnum(char *val)
 pathdirs_t *create_path_list(void)
 {
 	unsigned int dirnum, i;
-	char *pathstring = _getenv("PATH"), *tmpstr, *dir, *tmpptr, *freeptr;
+	char *pathstring = _getenv("PATH"), *tmpstr, *dir, **tmplist;
 	pathdirs_t *head = NULL, *new, *temp;
 
 	tmpstr = malloc(_strlen(pathstring) + 1);
 	if (tmpstr == NULL)
 		return (NULL);
-	freeptr = tmpstr;
 	_strcpy(tmpstr, pathstring);
 	dirnum = calcdirnum(tmpstr);
-	for (i = 0; i < dirnum; i++, tmpstr = NULL)
+	tmplist = _strtolist(tmpstr, ':');
+	for (i = 0; i < dirnum; i++)
 	{
 		new = malloc(sizeof(pathdirs_t));
 		if (new == NULL)
 		{
-			_freepathlist(head);
+			_freeall(tmplist, tmpstr, new, head);
 			return (NULL);
 		}
-		tmpptr = strtok(tmpstr, ":");
-		dir = malloc(_strlen(tmpptr) + 1);
+		dir = malloc(_strlen(tmplist[i]) + 1);
 		if (dir == NULL)
 		{
-			free(tmpstr);
-			free(new);
-			_freepathlist(head);
+			_freeall(tmplist, tmpstr, new, head);
 			return (NULL);
 		}
-		dir = _strcpy(dir, tmpptr);
+		dir = _strcpy(dir, tmplist[i]);
 		new->dir = dir;
 		new->next = NULL;
 		if (head == NULL)
@@ -67,6 +86,7 @@ pathdirs_t *create_path_list(void)
 			temp = temp->next;
 		temp->next = new;
 	}
-	free(freeptr);
+	_freedouble(tmplist);
+	free(tmpstr);
 	return (head);
 }
