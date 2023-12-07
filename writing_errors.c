@@ -5,21 +5,12 @@
  * can't be found in PATH variable
  * @command_name: the command name that was not found
 */
-void command_not_found(char *command_name)
+void command_not_found(char *command_name, int linenum, char *prog)
 {
-	char **buffer;
-	int i = 0;
-
-	buffer = malloc(sizeof(char *) * 4);
-	buffer[0] = command_name;
-	buffer[1] = ":";
-	buffer[2] = "command not found\n";
-	buffer[3] = NULL;
-
-	while (buffer[i] != NULL)
-	{
-		write(2, buffer[i], _strlen(buffer[i]));
-		i++;
-	}
-	free(buffer);
+        write(2, prog, _strlen(prog));
+	write(2, ": ", 2);
+	_putinterr(linenum);
+        write(2, ": ", 2);
+	write(2, command_name, _strlen(command_name));
+	write(2, ": not found\n", 12);
 }

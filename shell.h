@@ -36,6 +36,7 @@ char *_strcpy(char *dest, const char *src);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
 char* _strcat(char *s1, char *s2);
+void _putinterr(int linenum);
 
 /* environment variable functions */
 char *_getenv(char *name);
@@ -55,10 +56,10 @@ void _freepathlist(pathdirs_t *head);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 
 /* shell.c main functions */
-char **initargs(void);
-void command_not_found(char *command_name);
+char **initargs(int *linenum);
+void command_not_found(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **input, size_t *len, FILE *stream);
-void execute_command(char **args);
+void execute_command(char **args, char *prog);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 

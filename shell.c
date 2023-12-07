@@ -6,7 +6,7 @@
  *
  * Return: void.
  */
-void execute_command(char **args)
+void execute_command(char **args, char *prog)
 {
 	pid_t pid;
 	int wstatus;
@@ -14,14 +14,14 @@ void execute_command(char **args)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("fork");
+		perror(prog);
 		free(args);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		execve(args[0], args, environ);
-		perror("Execve");
+		perror(prog);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -36,7 +36,7 @@ void execute_command(char **args)
  * and creats the args string array.
  * Return: double pointer to the args array.
  */
-char **initargs(void)
+char **initargs(int *linenum)
 {
 	char **args = NULL, *input = NULL;
 	size_t size;
@@ -64,6 +64,7 @@ char **initargs(void)
 		free(input);
 		return (NULL);
 	}
+	(*linenum)++;
 	free(input);
 	return (args);
 }
@@ -73,15 +74,15 @@ char **initargs(void)
  * @prog: name of the running shell.
  * Return: void.
  */
-void interloop(__attribute__ ((unused)) char *prog)
+void interloop(char *prog)
 {
 	char **args, *command_name;
-	int builtin_flag, found_in_PATH_flag = 0;
+	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
 
 	while (1)
 	{
 		_putstr("($) ");
-		args = initargs();
+		args = initargs(&linenum);
 		if (args == NULL || args[0] == NULL)
 			continue;
 		builtin_flag = built_in(args);
@@ -94,19 +95,19 @@ void interloop(__attribute__ ((unused)) char *prog)
 		{
 			if (access(args[0], X_OK | F_OK) == 0)
 			{
-				execute_command(args);
+				execute_command(args, prog);
 				continue;
 			}
 			command_name = args[0];
 			found_in_PATH_flag = find_in_PATH(args);
 			if (found_in_PATH_flag == 1)
 			{
-				execute_command(args);
+				execute_command(args, prog);
 				continue;
 			}
 			else
 			{
-				command_not_found(command_name);
+				command_not_found(command_name, linenum, prog);
 				_freedouble(args);
 				continue;
 			}
@@ -124,9 +125,9 @@ void noninter(__attribute__ ((unused)) char *prog)
 {
 	char **args;
 	char *command_name;
-	int builtin_flag, found_in_PATH_flag = 0;
+	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
 
-	args = initargs();
+	args = initargs(&linenum);
 	if (args == NULL || args[0] == NULL)
 		exit(EXIT_SUCCESS);
 	builtin_flag = built_in(args);
@@ -137,19 +138,19 @@ void noninter(__attribute__ ((unused)) char *prog)
 	{
 		if (access(args[0], X_OK | F_OK) == 0)
 		{
-			execute_command(args);
+			execute_command(args, prog);
 			exit(EXIT_SUCCESS);
 		}
 		command_name = args[0];
 		found_in_PATH_flag = find_in_PATH(args);
 		if (found_in_PATH_flag == 1)
 		{
-			execute_command(args);
+			execute_command(args, prog);
 			exit(EXIT_SUCCESS);
 		}
 		else
 		{
-			command_not_found(command_name);
+			command_not_found(command_name, linenum, prog);
 			_freedouble(args);
 			exit(EXIT_SUCCESS);
 		}
