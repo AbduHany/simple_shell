@@ -6,7 +6,7 @@
  *
  * Return: void.
  */
-void execute_command(char **args, char *prog)
+void execute_command(char **args)
 {
 	pid_t pid;
 	int wstatus;
@@ -14,14 +14,14 @@ void execute_command(char **args, char *prog)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror(prog);
+		perror(args[0]);
 		free(args);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		execve(args[0], args, environ);
-		perror(prog);
+		perror(args[0]);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -34,6 +34,7 @@ void execute_command(char **args, char *prog)
 /**
  * initargs - reads input string from stdin
  * and creats the args string array.
+ * @linenum: number of lines inputed so far.
  * Return: double pointer to the args array.
  */
 char **initargs(int *linenum)
@@ -76,7 +77,7 @@ char **initargs(int *linenum)
  */
 void interloop(char *prog)
 {
-	char **args, *command_name;
+	char **args, *command_name = NULL;
 	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
 
 	while (1)
@@ -95,14 +96,14 @@ void interloop(char *prog)
 		{
 			if (access(args[0], X_OK | F_OK) == 0)
 			{
-				execute_command(args, prog);
+				execute_command(args);
 				continue;
 			}
 			command_name = args[0];
 			found_in_PATH_flag = find_in_PATH(args);
 			if (found_in_PATH_flag == 1)
 			{
-				execute_command(args, prog);
+				execute_command(args);
 				continue;
 			}
 			else
@@ -123,8 +124,7 @@ void interloop(char *prog)
  */
 void noninter(__attribute__ ((unused)) char *prog)
 {
-	char **args;
-	char *command_name;
+	char **args, *command_name = NULL;
 	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
 
 	args = initargs(&linenum);
@@ -138,14 +138,14 @@ void noninter(__attribute__ ((unused)) char *prog)
 	{
 		if (access(args[0], X_OK | F_OK) == 0)
 		{
-			execute_command(args, prog);
+			execute_command(args);
 			exit(EXIT_SUCCESS);
 		}
 		command_name = args[0];
 		found_in_PATH_flag = find_in_PATH(args);
 		if (found_in_PATH_flag == 1)
 		{
-			execute_command(args, prog);
+			execute_command(args);
 			exit(EXIT_SUCCESS);
 		}
 		else

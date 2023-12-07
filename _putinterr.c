@@ -2,7 +2,7 @@
 
 /**
  * _putinterr - prints an int value to stderr.
- * @a: integer to be printed.
+ * @linenum: integer to be printed.
  *
  * Return: void.
  */

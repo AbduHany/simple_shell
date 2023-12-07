@@ -59,7 +59,7 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **initargs(int *linenum);
 void command_not_found(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **input, size_t *len, FILE *stream);
-void execute_command(char **args, char *prog);
+void execute_command(char **args);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 
