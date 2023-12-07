@@ -50,6 +50,7 @@ char **initargs(int *linenum)
 		free(input);
 		exit(EXIT_SUCCESS);
 	}
+	(*linenum)++;
 	if (input[0] == '\n') /* input is empty */
 	{
 		free(input);
@@ -64,7 +65,6 @@ char **initargs(int *linenum)
 		free(input);
 		return (NULL);
 	}
-	(*linenum)++;
 	free(input);
 	return (args);
 }
