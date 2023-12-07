@@ -10,12 +10,11 @@ void _freedouble(char **s)
 {
 	int i = 0;
 
-	if (s == NULL || s[i] == NULL)
-		return;
 	while (s[i] != NULL)
 	{
 		free(s[i]);
 		i++;
 	}
-	free(s);
+	if (s)
+		free(s);
 }

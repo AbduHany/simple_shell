@@ -28,12 +28,13 @@ int calcdirnum(char *val)
 pathdirs_t *create_path_list(void)
 {
 	unsigned int dirnum, i;
-	char *pathstring = _getenv("PATH"), *tmpstr, *dir, *tmpptr;
+	char *pathstring = _getenv("PATH"), *tmpstr, *dir, *tmpptr, *freeptr;
 	pathdirs_t *head = NULL, *new, *temp;
 
 	tmpstr = malloc(_strlen(pathstring) + 1);
 	if (tmpstr == NULL)
 		return (NULL);
+	freeptr = tmpstr;
 	_strcpy(tmpstr, pathstring);
 	dirnum = calcdirnum(tmpstr);
 	for (i = 0; i < dirnum; i++, tmpstr = NULL)
@@ -66,5 +67,6 @@ pathdirs_t *create_path_list(void)
 			temp = temp->next;
 		temp->next = new;
 	}
+	free(freeptr);
 	return (head);
 }
