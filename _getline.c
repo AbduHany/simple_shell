@@ -1,38 +1,18 @@
 #include "shell.h"
-
+#define MAX_BUFFER_SIZE 5000
 /**
- * _getline - reads string from stdin and allocates memory
- * for it and then assigns it at the input string.
- * @input: string that will be filled with read bytes.
- * @len: size of bytes allocated for the string.
- * @stream: file buffer to read from.
- *
- * Return: signed size of read bytes.
- * -1 if error encountered.
- */
-ssize_t _getline(char **input, size_t *len, FILE *stream)
+ * 
+*/
+ssize_t _getline(char **lineptr, size_t *n, __attribute__ ((unused)) FILE *stream)
 {
-	char *buffer = NULL;
-	ssize_t i = 0;
+    ssize_t read_bytes;
+    static char buffer[MAX_BUFFER_SIZE];
 
-	*len = 0;
-	do {
-		if ((size_t)i == *len)
-		{
-			*len = (*len) * 2;
-			if (*len == 0)
-				*len = 120;
-		}
-		buffer = realloc(buffer, *len);
-		if (buffer == NULL)
-			return (-1);
-		buffer[i] = fgetc(stream);
-		if (buffer[i] == '\n')
-		{
-			break;
-		}
-		i++;
-	} while (buffer[i] != EOF);
-	*input = buffer;
-	return (i);
+    read_bytes = read(0, buffer, sizeof(buffer));
+
+    *lineptr = buffer;
+
+    *n = read_bytes; /* new line charceter is included in the count */
+
+    return (read_bytes);
 }

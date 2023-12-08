@@ -46,23 +46,23 @@ char **initargs(int *linenum, int *exitstatus)
 	ssize_t readbytes;
 	int i;
 
-	readbytes = getline(&input, &size, stdin);
+	readbytes = _getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
-		free(input);
+		/*free(input);*/
 		exit(*exitstatus);
 	}
 	(*linenum)++;
 	if (input[0] == '\n') /* input is empty */
 	{
-		free(input);
+		/*free(input);*/
 		return (NULL);
 	}
 	for (i = 0; input[i] != '\n';)
 		i++;
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
-	free(input);
+	/*free(input);*/
 	return (args);
 }
 

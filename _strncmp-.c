@@ -11,7 +11,7 @@
 int compare(char *s1, char *s2, size_t n)
 {
 	size_t i;
-	int result;
+	int result = 0;
 
 	for (i = 0; i < n ; i++)
 	{
@@ -26,6 +26,7 @@ int compare(char *s1, char *s2, size_t n)
 			break;
 		}
 	}
+
 	return (result);
 }
 /**
@@ -37,30 +38,26 @@ int compare(char *s1, char *s2, size_t n)
 */
 int _strncmp(char *s1, char *s2, size_t n)
 {
-	size_t len_s1 = _strlen(s1), len_s2 = _strlen(s2);
+	size_t len_s1 = strlen(s1), len_s2 = strlen(s2);
 	int result;
 
-	if (len_s1 >= n && len_s2 >= n)
+	if (len_s1 > n && len_s2 > n)
 	{
-		compare(s1, s2, n);
-		result = (0);
+		result = compare(s1, s2, n);
 	}
 	else
 	{
 		if (len_s1 == len_s2)
 		{
-			compare(s1, s2, len_s1);
-			result = (0);
+			result = compare(s1, s2, len_s1);
 		}
 		else if (len_s1 > len_s2)
 		{
-			compare(s1, s2, len_s2);
-			result = (1);
+			result = compare(s1, s2, len_s2);
 		}
 		else
 		{
-			compare(s1, s2, len_s1);
-			result = (-1);
+			result = compare(s1, s2, len_s1);
 		}
 	}
 	return (result);
