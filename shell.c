@@ -6,7 +6,7 @@
  *
  * Return: void.
  */
-void execute_command(char **args)
+void execute_command(char **args, int *exitstatus)
 {
 	pid_t pid;
 	int wstatus;
@@ -26,7 +26,8 @@ void execute_command(char **args)
 	}
 	else
 	{
-		wait(&wstatus);
+		waitpid(pid, &wstatus, 0);
+		*exitstatus = WEXITSTATUS(wstatus);
 		_freedouble(args);
 	}
 }
@@ -90,25 +91,19 @@ void looprun(char *prog, int *exitstatus)
 	}
 	if (access(args[0], X_OK | F_OK) == 0)
 	{
-		execute_command(args);
-		*exitstatus = 0;
+		execute_command(args, exitstatus);
 		return;
 	}
 	command_name = args[0];
 	found_in_PATH_flag = find_in_PATH(args);
 	if (found_in_PATH_flag == 1)
 	{
-		execute_command(args);
-		*exitstatus = 0;
+		execute_command(args, exitstatus);
 		return;
 	}
-	else
-	{
-		command_not_found(command_name, linenum, prog);
-		*exitstatus = 127;
-		_freedouble(args);
-		return;
-	}
+	command_not_found(command_name, linenum, prog);
+	*exitstatus = 127;
+	_freedouble(args);
 }
 
 /**
