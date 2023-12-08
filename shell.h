@@ -58,13 +58,8 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 /* shell.c main functions */
 char **initargs(int *linenum, int *exitstatus);
 void command_not_found(char *command_name, int linenum, char *prog);
-<<<<<<< HEAD
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 void execute_command(char **args);
-=======
-ssize_t _getline(char **input, size_t *len, FILE *stream);
-void execute_command(char **args, int *exitstatus);
->>>>>>> 8a877985fc9e8406e3a6daec7575456b1e75e994
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 
