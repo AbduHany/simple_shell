@@ -152,7 +152,7 @@ void noninter(__attribute__ ((unused)) char *prog)
 		{
 			command_not_found(command_name, linenum, prog);
 			_freedouble(args);
-			exit(EXIT_SUCCESS);
+			exit(127);
 		}
 	}
 	exit(EXIT_SUCCESS);

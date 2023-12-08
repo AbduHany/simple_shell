@@ -53,6 +53,8 @@ pathdirs_t *create_path_list(void)
 	char *pathstring = _getenv("PATH"), *tmpstr, *dir, **tmplist;
 	pathdirs_t *head = NULL, *new, *temp;
 
+	if (pathstring == NULL || pathstring[0] == '\0')
+		return (NULL);
 	tmpstr = malloc(_strlen(pathstring) + 1);
 	if (tmpstr == NULL)
 		return (NULL);
