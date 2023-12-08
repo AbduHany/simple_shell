@@ -9,28 +9,21 @@
  */
 char *_getenv(char *name)
 {
-	int i, j, flag;
+	int i, k, flag = 0, complen;
 	char **env = environ;
 
 	for (i = 0; environ[i] != NULL; i++)
 	{
-		flag = 0;
-		for (j = 0; name[j] != '\0' || env[i][j] != '='; j++)
+		for (k = 0, complen = 0; env[i][k] != '='; k++)
+			complen++;
+		if (_strlen(name) == complen)
 		{
-			if (name[j] != env[i][j])
-			{
+			if (_strncmp(name, env[i], complen) == 0)
 				flag = 1;
-				break;
-			}
-			else if (env[i][j] == '=')
-			{
-				flag = 1;
-				break;
-			}
 		}
-		if (flag == 0)
+		if (flag == 1)
 		{
-			return (&env[i][j + 1]);
+			return (&env[i][complen]);
 		}
 	}
 	return (NULL);
