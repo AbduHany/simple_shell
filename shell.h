@@ -56,7 +56,7 @@ void _freepathlist(pathdirs_t *head);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 
 /* shell.c main functions */
-char **initargs(int *linenum);
+char **initargs(int *linenum, int *exitstatus);
 void command_not_found(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **input, size_t *len, FILE *stream);
 void execute_command(char **args);

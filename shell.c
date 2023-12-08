@@ -15,8 +15,8 @@ void execute_command(char **args)
 	if (pid == -1)
 	{
 		perror(args[0]);
-		free(args);
-		exit(EXIT_FAILURE);
+		_freedouble(args);
+		return;
 	}
 	else if (pid == 0)
 	{
@@ -35,9 +35,11 @@ void execute_command(char **args)
  * initargs - reads input string from stdin
  * and creats the args string array.
  * @linenum: number of lines inputed so far.
+ * @exitstatus: pointer to the exitstatus int
+ * for the program.
  * Return: double pointer to the args array.
  */
-char **initargs(int *linenum)
+char **initargs(int *linenum, int *exitstatus)
 {
 	char **args = NULL, *input = NULL;
 	size_t size;
@@ -47,9 +49,8 @@ char **initargs(int *linenum)
 	readbytes = getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
-		write(STDOUT_FILENO, "\n", 1);
 		free(input);
-		exit(EXIT_SUCCESS);
+		exit(*exitstatus);
 	}
 	(*linenum)++;
 	if (input[0] == '\n') /* input is empty */
@@ -61,101 +62,53 @@ char **initargs(int *linenum)
 		i++;
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
-	if (args == NULL || args[0] == NULL)
-	{
-		free(input);
-		return (NULL);
-	}
 	free(input);
 	return (args);
 }
 
 /**
- * interloop - runs interactive REPL loop for the shell.
+ * looprun - runs interactive REPL loop for the shell.
  * @prog: name of the running shell.
- * Return: void.
+ * @exitstatus: address to the exitstatus int of the
+ * program.
+ * Return: exit status of a loop.
  */
-void interloop(char *prog)
+void looprun(char *prog, int *exitstatus)
 {
 	char **args, *command_name = NULL;
 	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
 
-	while (1)
-	{
-		_putstr("($) ");
-		args = initargs(&linenum);
-		if (args == NULL || args[0] == NULL)
-			continue;
-		builtin_flag = built_in(args);
-		if (builtin_flag == 1)
-		{
-			_freedouble(args);
-			continue;
-		}
-		else
-		{
-			if (access(args[0], X_OK | F_OK) == 0)
-			{
-				execute_command(args);
-				continue;
-			}
-			command_name = args[0];
-			found_in_PATH_flag = find_in_PATH(args);
-			if (found_in_PATH_flag == 1)
-			{
-				execute_command(args);
-				continue;
-			}
-			else
-			{
-				command_not_found(command_name, linenum, prog);
-				_freedouble(args);
-				continue;
-			}
-		}
-	}
-	exit(EXIT_SUCCESS);
-}
-
-/**
- * noninter - executes shell in non-interactive mode.
- * @prog: name of the running shell.
- * Return: void.
- */
-void noninter(__attribute__ ((unused)) char *prog)
-{
-	char **args, *command_name = NULL;
-	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
-
-	args = initargs(&linenum);
+	args = initargs(&linenum, exitstatus);
 	if (args == NULL || args[0] == NULL)
-		exit(EXIT_SUCCESS);
+		return;
 	builtin_flag = built_in(args);
 	if (builtin_flag == 1)
+	{
 		_freedouble(args);
-
+		*exitstatus = 0;
+		return;
+	}
+	if (access(args[0], X_OK | F_OK) == 0)
+	{
+		execute_command(args);
+		*exitstatus = 0;
+		return;
+	}
+	command_name = args[0];
+	found_in_PATH_flag = find_in_PATH(args);
+	if (found_in_PATH_flag == 1)
+	{
+		execute_command(args);
+		*exitstatus = 0;
+		return;
+	}
 	else
 	{
-		if (access(args[0], X_OK | F_OK) == 0)
-		{
-			execute_command(args);
-			exit(EXIT_SUCCESS);
-		}
-		command_name = args[0];
-		found_in_PATH_flag = find_in_PATH(args);
-		if (found_in_PATH_flag == 1)
-		{
-			execute_command(args);
-			exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			command_not_found(command_name, linenum, prog);
-			_freedouble(args);
-			exit(127);
-		}
+		command_not_found(command_name, linenum, prog);
+		*exitstatus = 127;
+		_freedouble(args);
+		return;
 	}
-	exit(EXIT_SUCCESS);
 }
 
 /**
@@ -169,11 +122,17 @@ void noninter(__attribute__ ((unused)) char *prog)
  */
 int main(__attribute__ ((unused)) int argc, char **argv)
 {
+	int interactiveflag = 0;
+	static int exitstatus;
+
+	exitstatus = 0;
 	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
-		interloop(argv[0]);
-	else
+		interactiveflag = 1;
+	while (1)
 	{
-		noninter(argv[0]);
+		if (interactiveflag)
+			_putstr("($) ");
+		looprun(argv[0], &exitstatus);
 	}
-	return (0);
+	return (exitstatus);
 }
