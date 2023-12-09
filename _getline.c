@@ -1,5 +1,5 @@
 #include "shell.h"
-#define BUFFER_SIZE 5000
+
 /**
  * _getline - gets all of the input line from stdin
  * @lineptr: saves the input from stdin 
@@ -9,14 +9,43 @@
 */
 ssize_t _getline(char **lineptr, size_t *n, __attribute__ ((unused)) FILE *stream)
 {
-    ssize_t read_bytes;
-    static char buffer[BUFFER_SIZE];
-		
-    read_bytes = read(0, buffer, sizeof(buffer));
+	static ssize_t i;
+	ssize_t readbytes;
+	char *buffer, letter;
+	int readflag;
+	size_t oldsize = 120, newsize;
 
-    *lineptr = buffer;
-
-    *n = read_bytes; /* new line charceter is included in the count */
-
-    return (read_bytes);
+	buffer = malloc(sizeof(char) * 120);
+	if (buffer == NULL)
+		return (-1);
+	i = 0;
+	do {
+		if ((size_t)i == oldsize)
+		{
+			newsize = oldsize + 120;
+			buffer = _realloc(buffer, oldsize, newsize);
+			oldsize = newsize;
+		}
+		readflag = read(STDIN_FILENO, &letter, 1);
+		if (readflag == -1 || (readflag == 0 && i == 0))
+		{
+			free(buffer);
+			return (-1);
+		}
+		if (readflag == 0 && i != 0)
+		{
+			i++;
+			break;
+		}
+		buffer[i] = letter;
+		i++;
+	} while (letter != '\n');
+	buffer[i] = '\0';
+	*lineptr = buffer;
+	if (i < 120)
+		*n = 120;
+	else
+		*n = newsize;
+	readbytes = i;
+	return (readbytes);
 }

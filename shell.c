@@ -48,7 +48,7 @@ char **initargs(int *linenum, int *exitstatus)
 	ssize_t readbytes;
 	int i;
 
-	readbytes = getline(&input, &size, stdin);
+	readbytes = _getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
 		free(input);
