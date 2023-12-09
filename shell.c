@@ -3,6 +3,7 @@
 /**
  * execute_command - creates a child process and executes command.
  * @args: array of argument strings to command.
+ * @exitstatus: pointer to the exitstatus of program.
  *
  * Return: void.
  */
@@ -78,7 +79,7 @@ void looprun(char *prog, int *exitstatus)
 {
 	char **args, *command_name = NULL;
 	int builtin_flag, found_in_PATH_flag = 0;
-	static int linenum = 0;
+	static int linenum;
 
 	args = initargs(&linenum, exitstatus);
 	if (args == NULL || args[0] == NULL)

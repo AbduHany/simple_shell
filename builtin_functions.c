@@ -92,7 +92,7 @@ void pwd(char **args, int *exitstatus)
 {
 	char *dir_name = malloc(1024);
 
-        (void)args;
+	(void)args;
 	(void)exitstatus;
 	if (getcwd(dir_name, 1024) == NULL)
 		perror("pwd:");
