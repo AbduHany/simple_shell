@@ -44,11 +44,11 @@ int _setenv(const char *name, const char *value, int overwrite);
 int _unsetenv(const char *name);
 
 /* built in commands */
-void print_env(char **args);
-void exit_function(char **args);
-int built_in(char **args);
-void cd(char **args);
-void pwd(__attribute__ ((unused)) char **args);
+void print_env(char **args,  int *exitstatus);
+void exit_function(char **args,  int *exitstatus);
+int built_in(char **args,  int *exitstatus);
+void cd(char **args,  int *exitstatus);
+void pwd(char **args,  int *exitstatus);
 
 /* memory functions */
 void _freedouble(char **s);

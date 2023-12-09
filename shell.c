@@ -47,23 +47,23 @@ char **initargs(int *linenum, int *exitstatus)
 	ssize_t readbytes;
 	int i;
 
-	readbytes = _getline(&input, &size, stdin);
+	readbytes = getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
-		/*free(input);*/
+		free(input);
 		exit(*exitstatus);
 	}
 	(*linenum)++;
 	if (input[0] == '\n') /* input is empty */
 	{
-		/*free(input);*/
+		free(input);
 		return (NULL);
 	}
 	for (i = 0; input[i] != '\n';)
 		i++;
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
-	/*free(input);*/
+	free(input);
 	return (args);
 }
 
@@ -77,12 +77,13 @@ char **initargs(int *linenum, int *exitstatus)
 void looprun(char *prog, int *exitstatus)
 {
 	char **args, *command_name = NULL;
-	int builtin_flag, found_in_PATH_flag = 0, linenum = 0;
+	int builtin_flag, found_in_PATH_flag = 0;
+	static int linenum = 0;
 
 	args = initargs(&linenum, exitstatus);
 	if (args == NULL || args[0] == NULL)
 		return;
-	builtin_flag = built_in(args);
+	builtin_flag = built_in(args, exitstatus);
 	if (builtin_flag == 1)
 	{
 		_freedouble(args);
