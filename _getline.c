@@ -32,11 +32,6 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 			free(buffer);
 			return (-1);
 		}
-		if (readbyte == 0 && i != 0)
-		{
-			i++;
-			break;
-		}
 		buffer[i] = letter;
 		i++;
 	} while (letter != '\n' && letter != ';');
