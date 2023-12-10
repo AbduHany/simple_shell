@@ -32,7 +32,7 @@ int _putchar(char c);
 int _putstr(char *str);
 char **_strtolist(char *str, char delim);
 int _strlen(char *str);
-char *_strcpy(char *dest, const char *src);
+char *_strcpy(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
 char* _strcat(char *s1, char *s2);
@@ -40,7 +40,7 @@ void _putinterr(int linenum);
 
 /* environment variable functions */
 char *_getenv(char *name);
-int _setenv(const char *name, const char *value, int overwrite);
+int _setenv(char *name, char *value, int overwrite);
 int _unsetenv(const char *name);
 
 /* built in commands */
@@ -49,6 +49,7 @@ void exit_function(char **args,  int *exitstatus);
 int built_in(char **args,  int *exitstatus);
 void cd(char **args,  int *exitstatus);
 void pwd(char **args,  int *exitstatus);
+void set_env(char **args, int *exitstatus);
 
 /* memory functions */
 void _freedouble(char **s);

@@ -14,10 +14,10 @@ int built_in(char **args, int *exitstatus)
 {
 	int i = 0;
 	int flag = 0;
-	char *built_ins[] = {"exit", "env", "cd", "pwd", NULL};
+	char *built_ins[] = {"exit", "env", "cd", "pwd", "setenv", NULL};
 
 	void (*fucntions[]) (char **argu, int *exitstatus) = {exit_function,
-		print_env, cd, pwd, NULL};
+		print_env, cd, pwd, set_env, NULL};
 
 	while (built_ins[i] != NULL)
 	{
