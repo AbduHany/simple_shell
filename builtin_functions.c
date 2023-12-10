@@ -40,6 +40,7 @@ int built_in(char **args, int *exitstatus)
  */
 void exit_function(char **args, int *exitstatus)
 {
+	_freedouble(environ);
 	_freedouble(args);
 	exit(*exitstatus);
 }

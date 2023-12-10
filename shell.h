@@ -62,5 +62,6 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 void execute_command(char **args, int *exitstatus);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
+char **initenv(void);
 
 #endif

@@ -51,6 +51,7 @@ char **initargs(int *linenum, int *exitstatus)
 	readbytes = _getline(&input, &size, stdin);
 	if (readbytes == -1)
 	{
+		_freedouble(environ);
 		free(input);
 		exit(*exitstatus);
 	}
@@ -117,6 +118,7 @@ int main(__attribute__ ((unused)) int argc, char **argv)
 	int interactiveflag = 0;
 	static int exitstatus;
 
+	environ = initenv();
 	exitstatus = 0;
 	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
 		interactiveflag = 1;
