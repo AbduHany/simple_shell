@@ -10,9 +10,8 @@
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 {
 	static ssize_t i;
-	ssize_t readbytes;
 	char *buffer, letter;
-	int readflag;
+	int readbyte;
 	size_t oldsize = 120, newsize;
 
 	(void)stream;
@@ -27,13 +26,13 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 			buffer = _realloc(buffer, oldsize, newsize);
 			oldsize = newsize;
 		}
-		readflag = read(STDIN_FILENO, &letter, 1);
-		if (readflag == -1 || (readflag == 0 && i == 0))
+		readbyte = read(STDIN_FILENO, &letter, 1);
+		if (readbyte == -1 || (readbyte == 0 && i == 0))
 		{
 			free(buffer);
 			return (-1);
 		}
-		if (readflag == 0 && i != 0)
+		if (readbyte == 0 && i != 0)
 		{
 			i++;
 			break;
@@ -47,6 +46,5 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 		*n = 120;
 	else
 		*n = newsize;
-	readbytes = i;
-	return (readbytes);
+	return (i);
 }
