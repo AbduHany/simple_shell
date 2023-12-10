@@ -2,12 +2,12 @@
 
 /**
  * _getline - gets all of the input line from stdin
- * @lineptr: saves the input from stdin 
+ * @lineptr: saves the input from stdin
  * @n: the number of charecters read form the stdin
  * @stream: stream of input, if it was a file
  * Return: the number of the charecters read
 */
-ssize_t _getline(char **lineptr, size_t *n, __attribute__ ((unused)) FILE *stream)
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 {
 	static ssize_t i;
 	ssize_t readbytes;
@@ -15,6 +15,7 @@ ssize_t _getline(char **lineptr, size_t *n, __attribute__ ((unused)) FILE *strea
 	int readflag;
 	size_t oldsize = 120, newsize;
 
+	(void)stream;
 	buffer = malloc(sizeof(char) * 120);
 	if (buffer == NULL)
 		return (-1);
@@ -39,7 +40,7 @@ ssize_t _getline(char **lineptr, size_t *n, __attribute__ ((unused)) FILE *strea
 		}
 		buffer[i] = letter;
 		i++;
-	} while (letter != '\n');
+	} while (letter != '\n' && letter != ';');
 	buffer[i] = '\0';
 	*lineptr = buffer;
 	if (i < 120)

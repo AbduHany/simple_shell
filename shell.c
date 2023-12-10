@@ -55,12 +55,7 @@ char **initargs(int *linenum, int *exitstatus)
 		exit(*exitstatus);
 	}
 	(*linenum)++;
-	if (input[0] == '\n') /* input is empty */
-	{
-		free(input);
-		return (NULL);
-	}
-	for (i = 0; input[i] != '\n';)
+	for (i = 0; input[i] != '\n' && input[i] != ';';)
 		i++;
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
