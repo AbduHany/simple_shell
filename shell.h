@@ -37,6 +37,7 @@ int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
 char* _strcat(char *s1, char *s2);
 void _putinterr(int linenum);
+int _atoi(char *s);
 
 /* environment variable functions */
 char *_getenv(char *name);

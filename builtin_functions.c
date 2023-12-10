@@ -40,12 +40,13 @@ int built_in(char **args, int *exitstatus)
  */
 void exit_function(char **args, int *exitstatus)
 {
+	int status;
+	(void)exitstatus;
+	status = _atoi(args[1]);
 	_freedouble(environ);
 	_freedouble(args);
-	exit(*exitstatus);
+	exit(status);
 }
-
-
 /**
  * print_env - prints the current environment variables.
  * @args: the arguments of given command
