@@ -9,6 +9,7 @@
  */
 void set_env(char **args, int *exitstatus)
 {
+	int i = 0;
 	char *var, *val;
 
 	(void)exitstatus;
@@ -17,14 +18,50 @@ void set_env(char **args, int *exitstatus)
 		perror("setenv: ");
 		return;
 	}
-	else if (args[1] == NULL)
+	else if (args[2] == NULL)
 	{
 		perror("setenv: ");
 		return;
 	}
 	var = args[1];
+	while (args[1][i] != '\0')
+	{
+		if (args[1][i] == '=')
+			return;
+		i++;
+	}
 	val = args[2];
 	_setenv(var, val, 1);
+}
+
+/**
+ * newenv - creates a new environment with the new variable added.
+ * @i: number of oldenv variable.
+ * @newstr: new variable to be added.
+ *
+ * Return: array of strings of new environment list.
+ */
+char **newenv(int i, char *newstr)
+{
+	char **new_env, **env = environ;
+	int j;
+
+	new_env = malloc(sizeof(char *) * (i + 2));
+	for (i = 0; env[i] != NULL; i++)
+	{
+		new_env[i] = malloc(sizeof(char) * (_strlen(env[i]) + 1));
+		if (new_env[i] == NULL)
+		{
+			for (j = i - 1; j >= 0; j--)
+				free(new_env[j]);
+			free(new_env);
+			return (NULL);
+		}
+		_strcpy(new_env[i], env[i]);
+	}
+	new_env[i++] = newstr;
+	new_env[i] = NULL;
+	return (new_env);
 }
 
 /**
@@ -40,7 +77,7 @@ int _setenv(char *name, char *value, int overwrite)
 {
 	char **env = environ, **new_env;
 	char *newstr = NULL;
-	int i;
+	int i, k, varlen;
 
 	newstr = malloc(sizeof(char) * (_strlen(name) + _strlen(value) + 2));
 	if (newstr == NULL)
@@ -51,28 +88,24 @@ int _setenv(char *name, char *value, int overwrite)
 
 	for (i = 0; env[i] != NULL; i++)
 	{
-		if (_strncmp(env[i], name, _strlen(name)) == 0)
+		for (k = 0, varlen = 0; env[i][k] != '='; k++)
+			varlen++;
+		if (_strlen(name) == varlen)
 		{
-			if (overwrite == 0)
+			if (_strncmp(env[i], name, varlen) == 0)
 			{
-				free(newstr);
-				return (-1);
+				if (overwrite == 0)
+				{
+					free(newstr);
+					return (-1);
+				}
+				free(env[i]);
+				env[i] = newstr;
+				return (0);
 			}
-			free(env[i]);
-			env[i] = newstr;
-			return (0);
 		}
 	}
-	new_env = malloc(sizeof(char *) * (i + 2));
-	for (i = 0; env[i] != NULL; i++)
-	{
-		new_env[i] = malloc(sizeof(char) * (_strlen(env[i]) + 1));
-		if (new_env[i] == NULL)
-			return (-1);
-		_strcpy(new_env[i], env[i]);
-	}
-	new_env[i++] = newstr;
-	new_env[i] = NULL;
+	new_env = newenv(i, newstr);
 	_freedouble(environ);
 	environ = new_env;
 	return (0);

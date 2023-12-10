@@ -1,11 +1,24 @@
 #include "shell.h"
 
 /**
+ * unset_env - deletes a variable from the environ list.
+ * @args: array of arguments in program.
+ * @exitstatus: pointer to exitstatus of program.
+ *
+ * Return: void.
+ */
+void unset_env(char **args, int *exitstatus)
+{
+	(void)args;
+	(void)exitstatus;
+}
+
+/**
  * _unsetenv - deletes the variable name from the environment
  * @name: name string of the variable to be unset.
  * Return: 0 on success and -1 on failure.
  */
-int _unsetenv(const char *name)
+int _unsetenv(char *name)
 {
 	char **env = environ, **new_env;
 	int i, j, del_location, del_flag = 0;
@@ -38,6 +51,7 @@ int _unsetenv(const char *name)
 		}
 	}
 	new_env[j] = NULL;
+	_freedouble(environ);
 	environ = new_env;
 	return (0);
 }

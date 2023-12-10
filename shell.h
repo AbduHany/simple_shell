@@ -41,7 +41,7 @@ void _putinterr(int linenum);
 /* environment variable functions */
 char *_getenv(char *name);
 int _setenv(char *name, char *value, int overwrite);
-int _unsetenv(const char *name);
+int _unsetenv(char *name);
 
 /* built in commands */
 void print_env(char **args,  int *exitstatus);

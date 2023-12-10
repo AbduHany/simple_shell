@@ -9,7 +9,7 @@
  * @exitstatus: pointer to the exitstatus of the shell.
  * Return: 1 if the given command was a built in and was excuted,
  * 0 is the given command was not a built in.
-*/
+ */
 int built_in(char **args, int *exitstatus)
 {
 	int i = 0;
@@ -97,7 +97,7 @@ void pwd(char **args, int *exitstatus)
 	(void)exitstatus;
 	if (getcwd(dir_name, 1024) == NULL)
 		perror("pwd:");
-	write(1, dir_name, strlen(dir_name) + 1);
+	write(1, dir_name, _strlen(dir_name) + 1);
 	_putchar('\n');
 	free(dir_name);
 }
