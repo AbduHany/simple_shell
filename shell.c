@@ -87,9 +87,16 @@ void looprun(char *prog, int *exitstatus)
 		*exitstatus = 0;
 		return;
 	}
-	if (access(args[0], X_OK | F_OK) == 0)
+	if (access(args[0], F_OK) == 0)
 	{
-		execute_command(args, exitstatus);
+		if (access(args[0], X_OK) == 0)
+		{
+			execute_command(args, exitstatus);
+			return;
+		}
+		permissiondenied(args[0], linenum, prog);
+		*exitstatus = 126;
+		_freedouble(args);
 		return;
 	}
 	command_name = args[0];
