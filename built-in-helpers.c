@@ -8,7 +8,7 @@ void change_dir(char *dir)
 
 	state = chdir(dir);
 		if (state != 0)
-			perror("cd");
+			perror("cd, problem here");
 }
 /**
  * 
@@ -43,4 +43,19 @@ void set_oldpwd_overwrite(char* dir)
     if (state != 0)
             perror("setenv:");
 }
-		
+/**
+ * 
+*/
+
+int is_directory(const char *path)
+{
+    struct stat statbuf;
+
+    if (stat(path, &statbuf) != 0) /* assiggn the value to the dcelared struct */
+    {
+        perror("stat");
+        return -1;
+    }
+
+    return (S_ISDIR(statbuf.st_mode));
+}

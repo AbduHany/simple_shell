@@ -43,8 +43,15 @@ void exit_function(char **args, int *exitstatus)
 {
 	char status;
 	(void)exitstatus;
-	if (args[1] == NULL)
-		status = _atoi(args[1]);
+	if (args[1] != NULL)
+	{
+		if (args[1][0] == '-')
+		{
+			illegal_number(args[1], int linenum, args[0])
+		}
+		else
+			status = _atoi(args[1]);
+	}
 	else
 		status = *exitstatus;
 	
@@ -53,6 +60,7 @@ void exit_function(char **args, int *exitstatus)
 	exit(status);
 }
 /**
+ * 
  * print_env - prints the current environment variables.
  * @args: the arguments of given command
  * @exitstatus: pointer to the exitstatus of the shell.
@@ -83,6 +91,8 @@ void print_env(char **args, int *exitstatus)
 void cd(char **args, int *exitstatus)
 {
 	int state;
+	char *tmp;
+	char *legal_options = "LP@";
 
 	char *dir_name = malloc(1024);
 
@@ -91,7 +101,7 @@ void cd(char **args, int *exitstatus)
 	if (getcwd(dir_name, 1024) == NULL) /* get the current dir */
 		perror("getcwd:");
 
-	if (args[1] == NULL)/* if the command is cd with no aruguments */
+	if (args[1] == NULL || (args[1][0] == '~' && args[1][1] == '\0'))/* if the command is cd with no aruguments */
 	{
 		change_dir(_getenv("HOME"));
 		
@@ -99,38 +109,74 @@ void cd(char **args, int *exitstatus)
 		if (state != 0)
 			perror("setenv:");
 	}
-	else if ((args[1][0]) == '-') /* cd - */
+	else if ((args[1][0]) == '-' && ((args[1][1]) == '\0')) /* cd - */
 	{
-		if (_getenv("OLDPWD") != NULL)
+		if (legal_options[0]!= args[1][1] && legal_options[1]!= args[1][1] &&
+		 legal_options[2]!= args[1][1])
 		{
-			change_dir(_getenv("OLDPWD"));
+			 /* /bin/sh: 1: cd: Illegal option -/  */
 
-			state = _setenv("PWD", _getenv("OLDPWD"), 1);
+		}
+
+		if (_getenv("OLDPWD") != NULL)
+		{	
+			change_dir(_getenv("OLDPWD"));
+			tmp = _strdup(_getenv("OLDPWD"));
+			write(1, tmp, (_strlen(tmp) + 1));
+			write(1, "\n",  1);
+
+			state = _setenv("OLDPWD", _getenv("PWD"), 1);
+			
+			if (state != 0)
+				perror("setenv:");
+			
+		
+			state = _setenv("PWD", tmp, 1);
+		
+			if (state != 0)
+				perror("setenv:");
+			free(tmp);		
+		}
+		else
+		{
+			state = _setenv("OLDPWD", _getenv("PWD"), 0);
 			if (state != 0)
 				perror("setenv:");
 		}
-		else
-			write(1,"bash: cd: OLDPWD not set", (_strlen("bash: cd: OLDPWD not set") + 1));
+			
 	}
 	else
 	{
-		state = chdir(args[1]); /* change the dir to the given arg */
-		if (state != 0)
-			perror("cd:");
+		if (access(args[1], F_OK) == 0)
+		{
+			if (is_directory(args[1]) == 0)
+			{
+				/* print the error that it is not a dir */
+			}
+			else
+			{
+				state = chdir(args[1]); /* change the dir to the given arg */
+				if (state != 0)
+					perror("cd");
+				else
+				{
+					if (_getenv("OLDPWD") == NULL)
+						_setenv("OLDPWD", dir_name, 0); /* dir_name is the dir before chdir */
+					else
+						_setenv("OLDPWD", dir_name, 1);
+
+					if (getcwd(dir_name, 1024) == NULL) /* dir name here is the current dir */
+						perror("getcwd:");
+
+					state = _setenv("PWD", dir_name, 1); /* set the current dir to dir_name */
+					if (state != 0)
+						perror("setenv:");
+				}
+			}
+		}
 		else
 		{
-			if (_getenv("OLDPWD") == NULL)
-				_setenv("OLDPWD", dir_name, 0); /* dir_name has the previod dir efire changing it with chdir */
-			else
-				_setenv("OLDPWD", dir_name, 1);
-
-
-			if (getcwd(dir_name, 1024) == NULL)
-				perror("getcwd:");
-
-			state = _setenv("PWD", dir_name, 1);
-			if (state != 0)
-				perror("setenv:");
+			/* no such file or dir */
 		}
 	}
 	free(dir_name);

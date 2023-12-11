@@ -27,6 +27,7 @@ typedef struct pathdirs
 	struct pathdirs *next;
 } pathdirs_t;
 
+
 /* string functions */
 int _putchar(char c);
 int _putstr(char *str);
@@ -38,6 +39,7 @@ int _strncmp(char *s1, char *s2, size_t n);
 char* _strcat(char *s1, char *s2);
 void _putinterr(int linenum);
 int _atoi(char *s);
+char* _strdup(char *str);
 
 /* environment variable functions */
 char *_getenv(char *name);
@@ -58,6 +60,8 @@ void change_dir(char *dir);
 void set_pwd(char* dir);
 void set_oldpwd(char* dir);
 void set_oldpwd_overwrite(char* dir);
+int is_directory(const char *path);
+void illegal_number(char *x, int linenum, char *prog)
 
 /* memory functions */
 void _freedouble(char **s);
@@ -67,6 +71,7 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 /* shell.c main functions */
 char **initargs(int *linenum, int *exitstatus);
 void command_not_found(char *command_name, int linenum, char *prog);
+void permissiondenied(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 void execute_command(char **args, int *exitstatus);
 int find_in_PATH(char **args);
