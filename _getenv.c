@@ -23,7 +23,7 @@ char *_getenv(char *name)
 		}
 		if (flag == 1)
 		{
-			return (&env[i][complen]);
+			return (&env[i][complen + 1]);
 		}
 	}
 	return (NULL);

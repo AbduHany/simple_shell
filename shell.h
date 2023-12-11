@@ -51,6 +51,12 @@ int built_in(char **args,  int *exitstatus);
 void cd(char **args,  int *exitstatus);
 void pwd(char **args,  int *exitstatus);
 
+/* built in helpers*/
+void change_dir(char *dir);
+void set_pwd(char* dir);
+void set_oldpwd(char* dir);
+void set_oldpwd_overwrite(char* dir);
+
 /* memory functions */
 void _freedouble(char **s);
 void _freepathlist(pathdirs_t *head);

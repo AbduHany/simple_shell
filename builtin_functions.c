@@ -40,9 +40,13 @@ int built_in(char **args, int *exitstatus)
  */
 void exit_function(char **args, int *exitstatus)
 {
-	int status;
+	char status;
 	(void)exitstatus;
-	status = _atoi(args[1]);
+	if (args[1] == NULL)
+		status = _atoi(args[1]);
+	else
+		status = *exitstatus;
+	
 	_freedouble(environ);
 	_freedouble(args);
 	exit(status);
@@ -67,6 +71,7 @@ void print_env(char **args, int *exitstatus)
 	}
 }
 
+
 /**
  * cd - changes current dir.
  * @args: the arguments of given command.
@@ -78,12 +83,57 @@ void cd(char **args, int *exitstatus)
 {
 	int state;
 
-	(void)exitstatus;
-	state = chdir(args[1]);
-	if (state != 0)
-		perror("cd:");
-}
+	char *dir_name = malloc(1024);
 
+	(void)exitstatus;
+
+	if (getcwd(dir_name, 1024) == NULL) /* get the current dir */
+		perror("getcwd:");
+
+	if (args[1] == NULL)/* if the command is cd with no aruguments */
+	{
+		change_dir(_getenv("HOME"));
+		
+		state = _setenv("PWD", _getenv("HOME"), 1);
+		if (state != 0)
+			perror("setenv:");
+	}
+	else if ((args[1][0]) == '-') /* cd - */
+	{
+		if (_getenv("OLDPWD") != NULL)
+		{
+			change_dir(_getenv("OLDPWD"));
+
+			state = _setenv("PWD", _getenv("OLDPWD"), 1);
+			if (state != 0)
+				perror("setenv:");
+		}
+		else
+			write(1,"bash: cd: OLDPWD not set", (_strlen("bash: cd: OLDPWD not set") + 1));
+	}
+	else
+	{
+		state = chdir(args[1]); /* change the dir to the given arg */
+		if (state != 0)
+			perror("cd:");
+		else
+		{
+			if (_getenv("OLDPWD") == NULL)
+				_setenv("OLDPWD", dir_name, 0); /* dir_name has the previod dir efire changing it with chdir */
+			else
+				_setenv("OLDPWD", dir_name, 1);
+
+
+			if (getcwd(dir_name, 1024) == NULL)
+				perror("getcwd:");
+
+			state = _setenv("PWD", dir_name, 1);
+			if (state != 0)
+				perror("setenv:");
+		}
+	}
+	free(dir_name);
+}
 /**
  * pwd - prints the current dir.
  * @args: the arguments of given command.
