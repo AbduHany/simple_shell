@@ -63,6 +63,7 @@ void command_not_found(char *command_name, int linenum, char *prog);
 void permissiondenied(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 void execute_command(char **args, int *exitstatus);
+int check_absolute_path(char **args, int *exitstatus, char *prog, int linenum);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
