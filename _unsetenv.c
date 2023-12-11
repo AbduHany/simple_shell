@@ -60,7 +60,7 @@ char **shrinkenv(int size, int del_location)
 		new_env[j] = malloc(strlen(env[i]) + 1);
 		if (new_env[j] == NULL)
 		{
-			for(k = j - 1; k >= 0; k--)
+			for (k = j - 1; k >= 0; k--)
 				free(new_env[k]);
 			free(new_env);
 			return (NULL);
