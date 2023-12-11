@@ -7,12 +7,14 @@
  *
  * Return: void.
  */
-void unset_env(char **args, int *exitstatus)
+void unset_env(char **args, int *exitstatus, int linenum, char *prog)
 {
 	int i = 0, ret;
 	char *var;
 
+	(void) linenum;
 	(void)exitstatus;
+	(void)prog;
 	if (args[1] == NULL)
 	{
 		perror("unsetenv: ");

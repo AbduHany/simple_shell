@@ -80,7 +80,7 @@ void looprun(char *prog, int *exitstatus)
 	args = initargs(&linenum, exitstatus);
 	if (args == NULL || args[0] == NULL)
 		return;
-	builtin_flag = built_in(args, exitstatus);
+	builtin_flag = built_in(args, exitstatus, linenum, prog);
 	if (builtin_flag == 1)
 	{
 		_freedouble(args);

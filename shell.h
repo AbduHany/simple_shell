@@ -47,13 +47,13 @@ int _setenv(char *name, char *value, int overwrite);
 int _unsetenv(char *name);
 
 /* built in commands */
-void print_env(char **args,  int *exitstatus);
-void exit_function(char **args,  int *exitstatus);
-int built_in(char **args,  int *exitstatus);
-void cd(char **args,  int *exitstatus);
-void pwd(char **args,  int *exitstatus);
-void set_env(char **args, int *exitstatus);
-void unset_env(char **args, int *exitstatus);
+void print_env(char **args,  int *exitstatus,  int linenum, char *prog);
+void exit_function(char **args,  int *exitstatus,  int linenum, char *prog);
+int built_in(char **args, int *exitstatus, int linenum, char *prog);
+void cd(char **args,  int *exitstatus,  int linenum, char *prog);
+void pwd(char **args,  int *exitstatus,  int linenum, char *prog);
+void set_env(char **args, int *exitstatus,  int linenum, char *prog);
+void unset_env(char **args, int *exitstatus,  int linenum, char *prog);
 
 /* built in helpers*/
 void change_dir(char *dir);
@@ -61,7 +61,8 @@ void set_pwd(char* dir);
 void set_oldpwd(char* dir);
 void set_oldpwd_overwrite(char* dir);
 int is_directory(const char *path);
-void illegal_number(char *x, int linenum, char *prog);
+
+void print_path(char *tmp);
 
 /* memory functions */
 void _freedouble(char **s);
@@ -79,4 +80,9 @@ int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
 
+
+/* error writing commands*/
+void illegal_option(char *x, int linenum, char *prog);
+void not_dir(char *x, int linenum, char *prog);
+void illegal_number(char *x, int linenum, char *prog);
 #endif

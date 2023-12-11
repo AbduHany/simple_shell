@@ -7,11 +7,13 @@
  *
  * Retrun: void
  */
-void set_env(char **args, int *exitstatus)
+void set_env(char **args, int *exitstatus,  int linenum, char *prog)
 {
 	int i = 0, ret;
 	char *var, *val;
 
+	(void)linenum;
+	(void)prog;
 	(void)exitstatus;
 	if (args[1] == NULL)
 	{

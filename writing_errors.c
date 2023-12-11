@@ -51,3 +51,35 @@ void illegal_number(char *x, int linenum, char *prog)
 	write(2, x, _strlen(x));
 	write(2, "\n", 1);
 }
+
+/* for: cd*/
+/**
+ * 
+*/
+void illegal_option(char *x, int linenum, char *prog)
+{
+	write(2, prog, _strlen(prog));
+	write(2, ": ", 2);
+	_putinterr(linenum);
+	write(2, ": ", 2);
+	write(2, "cd", _strlen("cd"));
+	write(2, ": ", 2);
+	write(2, "Illegal option: ", _strlen("Illegal option: "));
+	write(2, x, _strlen(x));
+	write(2, "\n", 1);
+}
+/**
+ * 
+*/
+void not_dir(char *x, int linenum, char *prog)
+{
+	write(2, prog, _strlen(prog));
+	write(2, ": ", 2);
+	_putinterr(linenum);
+	write(2, ": ", 2);
+	write(2, "cd", _strlen("cd"));
+	write(2, ": ", 2);
+	write(2, "can't cd to ", _strlen("can't cd to "));
+	write(2, x, _strlen(x));
+	write(2, "\n", 1);
+}

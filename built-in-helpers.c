@@ -59,3 +59,12 @@ int is_directory(const char *path)
 
     return (S_ISDIR(statbuf.st_mode));
 }
+/**
+ * 
+*/
+void print_path(char *tmp)
+{
+    write(1, tmp, (_strlen(tmp) + 1));
+	write(1, "\n",  1);
+}
+
