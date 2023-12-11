@@ -42,6 +42,47 @@ void _freeall(char **tmplist, char *tmpstr, pathdirs_t *new, pathdirs_t *head)
 }
 
 /**
+ * addpathnode - creates and adds a node to the path list.
+ * @head: pointer to the head pointer of the pathlist.
+ * @tmplist: array of strings from PATH variable.
+ * @tmpstr: pointer to the value string of the PATH variable.
+ * @i: location of tmplist string to be added.
+ *
+ * Return: void.
+ */
+int addpathnode(pathdirs_t **head, char **tmplist, char *tmpstr, int i)
+{
+	pathdirs_t *new, *temp;
+	char *dir;
+
+	new = malloc(sizeof(pathdirs_t));
+	if (new == NULL)
+	{
+		_freeall(tmplist, tmpstr, new, *head);
+		return (-1);
+	}
+	dir = malloc(_strlen(tmplist[i]) + 1);
+	if (dir == NULL)
+	{
+		_freeall(tmplist, tmpstr, new, *head);
+		return (-1);
+	}
+	dir = _strcpy(dir, tmplist[i]);
+	new->dir = dir;
+	new->next = NULL;
+	if (*head == NULL)
+	{
+		*head = new;
+		return (0);
+	}
+	temp = *head;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = new;
+	return (0);
+}
+
+/**
  * create_path_list - builds a linked list of the PATH directories.
  *
  * Return: head pointer to the first node/struct_pathdir in the
@@ -50,8 +91,9 @@ void _freeall(char **tmplist, char *tmpstr, pathdirs_t *new, pathdirs_t *head)
 pathdirs_t *create_path_list(void)
 {
 	unsigned int dirnum, i;
-	char *pathstring = _getenv("PATH"), *tmpstr, *dir, **tmplist;
-	pathdirs_t *head = NULL, *new, *temp;
+	int check;
+	char *pathstring = _getenv("PATH"), *tmpstr, **tmplist;
+	pathdirs_t *head = NULL;
 
 	if (pathstring == NULL || pathstring[0] == '\0')
 		return (NULL);
@@ -63,30 +105,9 @@ pathdirs_t *create_path_list(void)
 	tmplist = _strtolist(tmpstr, ':');
 	for (i = 0; i < dirnum; i++)
 	{
-		new = malloc(sizeof(pathdirs_t));
-		if (new == NULL)
-		{
-			_freeall(tmplist, tmpstr, new, head);
+		check = addpathnode(&head, tmplist, tmpstr, i);
+		if (check == -1)
 			return (NULL);
-		}
-		dir = malloc(_strlen(tmplist[i]) + 1);
-		if (dir == NULL)
-		{
-			_freeall(tmplist, tmpstr, new, head);
-			return (NULL);
-		}
-		dir = _strcpy(dir, tmplist[i]);
-		new->dir = dir;
-		new->next = NULL;
-		if (head == NULL)
-		{
-			head = new;
-			continue;
-		}
-		temp = head;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = new;
 	}
 	_freedouble(tmplist);
 	free(tmpstr);
