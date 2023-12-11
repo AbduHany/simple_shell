@@ -50,6 +50,7 @@ int built_in(char **args,  int *exitstatus);
 void cd(char **args,  int *exitstatus);
 void pwd(char **args,  int *exitstatus);
 void set_env(char **args, int *exitstatus);
+void unset_env(char **args, int *exitstatus);
 
 /* memory functions */
 void _freedouble(char **s);

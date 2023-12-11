@@ -9,7 +9,7 @@
  */
 void set_env(char **args, int *exitstatus)
 {
-	int i = 0;
+	int i = 0, ret;
 	char *var, *val;
 
 	(void)exitstatus;
@@ -31,20 +31,25 @@ void set_env(char **args, int *exitstatus)
 		i++;
 	}
 	val = args[2];
-	_setenv(var, val, 1);
+	ret = _setenv(var, val, 1);
+	if (ret != 0)
+	{
+		perror("setenv: ");
+		return;
+	}
 }
 
 /**
- * newenv - creates a new environment with the new variable added.
- * @i: number of oldenv variable.
+ * expandenv - creates a new environment with the new variable added.
+ * @size: size of oldenv variable.
  * @newstr: new variable to be added.
  *
  * Return: array of strings of new environment list.
  */
-char **newenv(int i, char *newstr)
+char **expandenv(int size, char *newstr)
 {
 	char **new_env, **env = environ;
-	int j;
+	int j, i = size;
 
 	new_env = malloc(sizeof(char *) * (i + 2));
 	for (i = 0; env[i] != NULL; i++)
@@ -105,7 +110,9 @@ int _setenv(char *name, char *value, int overwrite)
 			}
 		}
 	}
-	new_env = newenv(i, newstr);
+	new_env = expandenv(i, newstr);
+	if (new_env == NULL)
+		return (-1);
 	_freedouble(environ);
 	environ = new_env;
 	return (0);
