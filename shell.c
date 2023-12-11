@@ -74,7 +74,7 @@ char **initargs(int *linenum, int *exitstatus)
 void looprun(char *prog, int *exitstatus)
 {
 	char **args, *command_name = NULL;
-	int builtin_flag, found_in_PATH_flag = 0;
+	int builtin_flag, found_in_PATH_flag = 0, absolute_flag;
 	static int linenum;
 
 	args = initargs(&linenum, exitstatus);
@@ -87,18 +87,9 @@ void looprun(char *prog, int *exitstatus)
 		*exitstatus = 0;
 		return;
 	}
-	if (access(args[0], F_OK) == 0)
-	{
-		if (access(args[0], X_OK) == 0)
-		{
-			execute_command(args, exitstatus);
-			return;
-		}
-		permissiondenied(args[0], linenum, prog);
-		*exitstatus = 126;
-		_freedouble(args);
+	absolute_flag = check_absolute_path(args, exitstatus, prog, linenum);
+	if (absolute_flag == 1)
 		return;
-	}
 	command_name = args[0];
 	found_in_PATH_flag = find_in_PATH(args);
 	if (found_in_PATH_flag == 1)
