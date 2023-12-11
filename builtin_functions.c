@@ -47,7 +47,7 @@ void exit_function(char **args, int *exitstatus)
 	{
 		if (args[1][0] == '-')
 		{
-			illegal_number(args[1], int linenum, args[0])
+			/*illegal_number(args[1], int linenum, args[0])*/
 		}
 		else
 			status = _atoi(args[1]);

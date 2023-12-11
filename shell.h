@@ -61,7 +61,7 @@ void set_pwd(char* dir);
 void set_oldpwd(char* dir);
 void set_oldpwd_overwrite(char* dir);
 int is_directory(const char *path);
-void illegal_number(char *x, int linenum, char *prog)
+void illegal_number(char *x, int linenum, char *prog);
 
 /* memory functions */
 void _freedouble(char **s);
