@@ -1,6 +1,28 @@
 #include "shell.h"
 
 /**
+ * skiponearg - skips the argument that has a $ and no corresponding
+ * variable.
+ * @arg: adress of pointer to argument to be skipped.
+ * Return: void.
+ */
+void skiponearg(char **arg)
+{
+	int i;
+
+	free(arg[0]);
+	for (i = 0;; i++)
+	{
+		if (arg[i + 1] == NULL)
+		{
+			arg[i] = NULL;
+			break;
+		}
+		arg[i] = arg[i + 1];
+	}
+}
+
+/**
  * handledollar - handles dollar sign variable and replaces the variables
  * with their corresponding values.
  * @args: pointer to array of argument strings to be executed.
@@ -38,14 +60,20 @@ void handledollar(char **args, int *exitstatus)
 			args[i] = newarg;
 			continue;
 		}
-		tmpptr = &args[i][1];
-		value = _getenv(tmpptr);
-		if (value == NULL)
-			continue;
-		newarg = _strdup(value);
-		if (newarg == NULL)
-			continue;
-		free(args[i]);
-		args[i] = newarg;
+		else if (args[i][0] == '$' && args[i][1] != '\0')
+		{
+			tmpptr = &args[i][1];
+			value = _getenv(tmpptr);
+			if (value == NULL)
+			{
+				skiponearg(&args[i]);
+				continue;
+			}
+			newarg = _strdup(value);
+			if (newarg == NULL)
+				continue;
+			free(args[i]);
+			args[i] = newarg;
+		}
 	}
 }

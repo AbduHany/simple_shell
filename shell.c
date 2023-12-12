@@ -88,7 +88,6 @@ void looprun(char *prog, int *exitstatus, int fd)
 	if (builtin_flag == 1)
 	{
 		_freedouble(args);
-		*exitstatus = 0;
 		return;
 	}
 	absolute_flag = check_absolute_path(args, exitstatus, prog, linenum);
