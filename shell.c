@@ -56,6 +56,11 @@ char **initargs(int *linenum, int *exitstatus, int fd)
 		free(input);
 		exit(*exitstatus);
 	}
+	if (input[0] == '\n' || input[0] == ';' || input[0] == '#')
+	{
+		free(input);
+		return (NULL);
+	}
 	for (i = 0; input[i] != '\n' && input[i] != ';' && input[i] != '\0';)
 		i++;
 	if (input[i] == '\n' || input[i] == '\0')
