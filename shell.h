@@ -93,4 +93,5 @@ void not_dir(char *x, int linenum, char *prog);
 void illegal_number(char *x, int linenum, char *prog);
 void file_not_found(char **argv);
 void file_not_readable(char **argv);
+
 #endif
