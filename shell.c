@@ -52,6 +52,8 @@ char **initargs(int *linenum, int *exitstatus, int fd)
 	readbytes = _getline(&input, &size, fd);
 	if (readbytes == -1)
 	{
+		if (fd != STDIN_FILENO)
+			close(fd);
 		_freedouble(environ);
 		free(input);
 		exit(*exitstatus);
