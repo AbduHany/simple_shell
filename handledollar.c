@@ -23,6 +23,45 @@ void skiponearg(char **arg)
 }
 
 /**
+ * replaceexit - replaces an argument with exit status.
+ * @args: pointer to array of argument string to be executed.
+ * @exitstatus: pointer to the exitstatus of the program.
+ * Return: void.
+ */
+void replaceexit(char **args, int *exitstatus)
+{
+	int exitint;
+	char *newarg;
+
+	exitint = *exitstatus;
+	newarg = _itoa(exitint);
+	if (!newarg)
+		return;
+	free(*args);
+	*args = newarg;
+}
+
+/**
+ * replacepid - replaces an argument with its pid.
+ * @args: pointer to array of argument string to be executed.
+ * @exitstatus: pointer to the exitstatus of the program.
+ * Return: void.
+ */
+void replacepid(char **args, int *exitstatus)
+{
+	pid_t pid;
+	char *newarg;
+
+	(void)exitstatus;
+	pid = getpid();
+	newarg = _itoa(pid);
+	if (!newarg)
+		return;
+	free(*args);
+	*args = newarg;
+}
+
+/**
  * handledollar - handles dollar sign variable and replaces the variables
  * with their corresponding values.
  * @args: pointer to array of argument strings to be executed.
@@ -31,9 +70,8 @@ void skiponearg(char **arg)
  */
 void handledollar(char **args, int *exitstatus)
 {
-	int i, exit;
+	int i;
 	char *tmpptr = NULL, *value, *newarg;
-	pid_t pid;
 
 	if (args == NULL)
 		return;
@@ -41,25 +79,9 @@ void handledollar(char **args, int *exitstatus)
 	{
 		newarg = NULL;
 		if (args[i][0] == '$' && args[i][1] == '$' && args[i][2] == '\0')
-		{
-			pid = getpid();
-			newarg = _itoa(pid);
-			if (!newarg)
-				continue;
-			free(args[i]);
-			args[i] = newarg;
-			continue;
-		}
+			replacepid(&args[i], exitstatus);
 		else if (args[i][0] == '$' && args[i][1] == '?' && args[i][2] == '\0')
-		{
-			exit = *exitstatus;
-			newarg = _itoa(exit);
-			if (!newarg)
-				continue;
-			free(args[i]);
-			args[i] = newarg;
-			continue;
-		}
+			replaceexit(&args[i], exitstatus);
 		else if (args[i][0] == '$' && args[i][1] != '\0')
 		{
 			tmpptr = &args[i][1];
