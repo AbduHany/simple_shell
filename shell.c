@@ -63,6 +63,7 @@ char **initargs(int *linenum, int *exitstatus, int fd)
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
 	handledollar(args, exitstatus);
+	handlecomments(args, exitstatus);
 	free(input);
 	return (args);
 }

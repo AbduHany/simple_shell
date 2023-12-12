@@ -85,6 +85,7 @@ int find_in_PATH(char **args, int *exitstatus, char *prog, int linenum);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
 void handledollar(char **args, int *exitstatus);
+void handlecomments(char **args, int *exitstatus);
 int _readfile(char **argv);
 
 /* error writing commands*/
