@@ -37,7 +37,10 @@ void permissiondenied(char *command_name, int linenum, char *prog)
 
 /* for: exit*/
 /**
- * 
+ * illegal_number - when exit takes a invalid argument
+ * @x: the invalid argument as a string
+ * @linenum: the number of the line of the exit command
+ * @prog: the name of the current shell
 */
 void illegal_number(char *x, int linenum, char *prog)
 {
@@ -54,7 +57,10 @@ void illegal_number(char *x, int linenum, char *prog)
 
 /* for: cd*/
 /**
- * 
+ * illegal_option - when cd takes an invalid argument
+ * @x: the invalid argument as a string
+ * @linenum: the number of the line of the exit command
+ * @prog: the name of the current shell
 */
 void illegal_option(char *x, int linenum, char *prog)
 {
@@ -69,7 +75,10 @@ void illegal_option(char *x, int linenum, char *prog)
 	write(2, "\n", 1);
 }
 /**
- * 
+ * not_dir - whend the arguument following cd is not a dir
+ * @x: the invalid argument as a string
+ * @linenum: the number of the line of the exit command
+ * @prog: the name of the current shell
 */
 void not_dir(char *x, int linenum, char *prog)
 {

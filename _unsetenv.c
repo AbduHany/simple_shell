@@ -4,7 +4,8 @@
  * unset_env - deletes a variable from the environ list.
  * @args: array of arguments in program.
  * @exitstatus: pointer to exitstatus of program.
- *
+ * @linenum: the number of the line of the command
+ * @prog: the name of the shell
  * Return: void.
  */
 void unset_env(char **args, int *exitstatus, int linenum, char *prog)

@@ -4,7 +4,8 @@
  * set_env - adds or updates and existing environment variable.
  * @args: array of strings in program.
  * @exitstatus: pointer to the exitstatus of the program.
- *
+ * @linenum: the number of the line of the command
+ * @prog: the name of the shell
  * Retrun: void
  */
 void set_env(char **args, int *exitstatus,  int linenum, char *prog)
