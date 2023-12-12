@@ -9,12 +9,12 @@
 */
 void command_not_found(char *command_name, int linenum, char *prog)
 {
-	write(2, prog, _strlen(prog));
-	write(2, ": ", 2);
-	_putinterr(linenum);
-	write(2, ": ", 2);
-	write(2, command_name, _strlen(command_name));
-	write(2, ": not found\n", 12);
+		write(2, prog, _strlen(prog));
+		write(2, ": ", 2);
+		_putinterr(linenum);
+		write(2, ": ", 2);
+		write(2, command_name, _strlen(command_name));
+		write(2, ": not found\n", 12);
 }
 
 /**

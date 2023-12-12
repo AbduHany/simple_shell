@@ -39,25 +39,27 @@ void execute_command(char **args, int *exitstatus)
  * @linenum: number of lines inputed so far.
  * @exitstatus: pointer to the exitstatus int
  * for the program.
+ * @fd: filedescriptor to initialize from args from.
  * Return: double pointer to the args array.
  */
-char **initargs(int *linenum, int *exitstatus)
+char **initargs(int *linenum, int *exitstatus, int fd)
 {
 	char **args = NULL, *input = NULL;
 	size_t size;
 	ssize_t readbytes;
 	int i;
 
-	readbytes = _getline(&input, &size, stdin);
+	readbytes = _getline(&input, &size, fd);
 	if (readbytes == -1)
 	{
 		_freedouble(environ);
 		free(input);
 		exit(*exitstatus);
 	}
-	(*linenum)++;
-	for (i = 0; input[i] != '\n' && input[i] != ';';)
+	for (i = 0; input[i] != '\n' && input[i] != ';' && input[i] != '\0';)
 		i++;
+	if (input[i] == '\n' || input[i] == '\0')
+		(*linenum)++;
 	input[i] = '\0';
 	args = _strtolist(input, ' ');
 	handledollar(args, exitstatus);
@@ -70,15 +72,16 @@ char **initargs(int *linenum, int *exitstatus)
  * @prog: name of the running shell.
  * @exitstatus: address to the exitstatus int of the
  * program.
+ * @fd: filedescriptor to run command from.
  * Return: exit status of a loop.
  */
-void looprun(char *prog, int *exitstatus)
+void looprun(char *prog, int *exitstatus, int fd)
 {
-	char **args, *command_name = NULL;
+	char **args = NULL, *command_name = NULL;
 	int builtin_flag, found_in_PATH_flag = 0, absolute_flag;
 	static int linenum;
 
-	args = initargs(&linenum, exitstatus);
+	args = initargs(&linenum, exitstatus, fd);
 	if (args == NULL || args[0] == NULL)
 		return;
 	builtin_flag = built_in(args, exitstatus, linenum, prog);
@@ -112,20 +115,22 @@ void looprun(char *prog, int *exitstatus)
  * Return: 0 on success
  * on error, a different value.
  */
-int main(__attribute__ ((unused)) int argc, char **argv)
+int main(int argc, char **argv)
 {
-	int interactiveflag = 0;
+	int interactiveflag = 0, fd = STDIN_FILENO;
 	static int exitstatus;
 
 	environ = initenv();
 	exitstatus = 0;
-	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
+	if (argc == 2)
+		fd = _readfile(argv);
+	else if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
 		interactiveflag = 1;
 	while (1)
 	{
 		if (interactiveflag)
 			_putstr("($) ");
-		looprun(argv[0], &exitstatus);
+		looprun(argv[0], &exitstatus, fd);
 	}
 	return (exitstatus);
 }

@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <fcntl.h>
 
 extern char **environ;
 
@@ -66,7 +67,6 @@ int is_directory(const char *path);
 void switch_current_dir();
 void go_to_home();
 void change_to_new_dir(int *exitstatus, char *dir_name, int linenum, char *prog, char **args);
-
 void print_path(char *tmp);
 
 /* memory functions */
@@ -75,20 +75,22 @@ void _freepathlist(pathdirs_t *head);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 
 /* shell.c main functions */
-char **initargs(int *linenum, int *exitstatus);
+char **initargs(int *linenum, int *exitstatus, int fd);
 void command_not_found(char *command_name, int linenum, char *prog);
 void permissiondenied(char *command_name, int linenum, char *prog);
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+ssize_t _getline(char **lineptr, size_t *n, int fd);
 void execute_command(char **args, int *exitstatus);
 int check_absolute_path(char **args, int *exitstatus, char *prog, int linenum);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
 void handledollar(char **args, int *exitstatus);
-
+int _readfile(char **argv);
 
 /* error writing commands*/
 void illegal_option(char *x, int linenum, char *prog);
 void not_dir(char *x, int linenum, char *prog);
 void illegal_number(char *x, int linenum, char *prog);
+void file_not_found(char **argv);
+void file_not_readable(char **argv);
 #endif
