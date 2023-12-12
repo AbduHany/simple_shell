@@ -39,6 +39,7 @@ int _strncmp(char *s1, char *s2, size_t n);
 char* _strcat(char *s1, char *s2);
 void _putinterr(int linenum);
 int _atoi(char *s);
+char *_itoa(int num);
 char* _strdup(char *str);
 int _hasalpha(char *str);
 
@@ -83,6 +84,7 @@ int check_absolute_path(char **args, int *exitstatus, char *prog, int linenum);
 int find_in_PATH(char **args);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
+void handledollar(char **args, int *exitstatus);
 
 
 /* error writing commands*/
