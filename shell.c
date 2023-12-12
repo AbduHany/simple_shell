@@ -77,7 +77,7 @@ char **initargs(int *linenum, int *exitstatus, int fd)
  */
 void looprun(char *prog, int *exitstatus, int fd)
 {
-	char **args = NULL, *command_name = NULL;
+	char **args = NULL;
 	int builtin_flag, found_in_PATH_flag = 0, absolute_flag;
 	static int linenum;
 
@@ -93,15 +93,9 @@ void looprun(char *prog, int *exitstatus, int fd)
 	absolute_flag = check_absolute_path(args, exitstatus, prog, linenum);
 	if (absolute_flag == 1)
 		return;
-	command_name = args[0];
-	found_in_PATH_flag = find_in_PATH(args);
+	found_in_PATH_flag = find_in_PATH(args, exitstatus, prog, linenum);
 	if (found_in_PATH_flag == 1)
-	{
-		execute_command(args, exitstatus);
 		return;
-	}
-	command_not_found(command_name, linenum, prog);
-	*exitstatus = 127;
 	_freedouble(args);
 }
 

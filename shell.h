@@ -81,7 +81,7 @@ void permissiondenied(char *command_name, int linenum, char *prog);
 ssize_t _getline(char **lineptr, size_t *n, int fd);
 void execute_command(char **args, int *exitstatus);
 int check_absolute_path(char **args, int *exitstatus, char *prog, int linenum);
-int find_in_PATH(char **args);
+int find_in_PATH(char **args, int *exitstatus, char *prog, int linenum);
 pathdirs_t *create_path_list(void);
 char **initenv(void);
 void handledollar(char **args, int *exitstatus);
