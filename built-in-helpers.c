@@ -9,7 +9,7 @@ void change_dir(char *dir)
 
 	state = chdir(dir);
 		if (state != 0)
-			perror("cd, problem here");
+			perror("cd");
 }
 /* for: cd*/
 /**

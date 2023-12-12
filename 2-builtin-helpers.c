@@ -42,6 +42,9 @@ void go_to_home(void)
 {
 	int state;
 
+	if (_getenv("HOME") == NULL)
+		return;
+
 	change_dir(_getenv("HOME"));
 
 	state = _setenv("PWD", _getenv("HOME"), 1);
