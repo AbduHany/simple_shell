@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * _strcmp - function that compares 2 strings lexicographically
  * @s1: first string to be compared.
