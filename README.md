@@ -4,7 +4,7 @@ This is the repository for the group project "Simple Shell".
 
 Team members:
 
-- Abdelrahman Metawei
+- Abdelrahman Hany Metawei
 - Nada Zaki
 
 This repository contains all .c files and .h files required to create a
