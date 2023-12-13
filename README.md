@@ -2,7 +2,7 @@
 
 This is the repository for the group project "Simple Shell".
 
-Team members 🤝 :
+Team members:
 
 - Abdelrahman Metawei
 - Nada Zaki
