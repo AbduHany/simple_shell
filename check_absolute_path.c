@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * check_absolute_path - checks if the absolute path exists and is executable.
  * @args: array of argument strings.
