@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * _realloc - reallocates a memory block using malloc and free
  * @ptr: pointer to the newly allocated memory.
