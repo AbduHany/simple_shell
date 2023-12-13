@@ -13,7 +13,6 @@
 #include <fcntl.h>
 
 extern char **environ;
-
 /**
  * struct pathdirs - a struct containing directories
  * in PATH variable.
