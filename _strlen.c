@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * _strlen - counts the number of characters in a string.
  * @str: char pointer to the string.
