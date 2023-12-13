@@ -29,9 +29,13 @@ void switch_current_dir(void)
 	}
 	else
 	{
+		change_dir(_getenv("PWD"));
+		tmp = _strdup(_getenv("PWD"));
+		print_path(tmp);
 		state = _setenv("OLDPWD", _getenv("PWD"), 0);
 		if (state != 0)
 			perror("setenv:");
+		free(tmp);
 	}
 }
 
