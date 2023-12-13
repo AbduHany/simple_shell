@@ -18,5 +18,3 @@ int _hasalpha(char *str)
 	}
 	return (0);
 }
-
-
