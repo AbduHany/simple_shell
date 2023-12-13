@@ -12,6 +12,7 @@ void change_dir(char *dir)
 		if (state != 0)
 			perror("cd");
 }
+
 /* for: cd*/
 /**
  * is_directory - checks if the last item in a path is a dir or not
