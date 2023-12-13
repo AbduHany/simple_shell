@@ -9,9 +9,9 @@
 void file_not_found(char **argv)
 {
 	write(2, argv[0], _strlen(argv[0]));
-	write(2, ": 0: cannot open ", 17);
+	write(2, ": 0: Can't open ", 16);
 	write(2, argv[1], _strlen(argv[1]));
-	write(2, ": No such file\n", 15);
+	write(2, "\n", 1);
 }
 
 /**

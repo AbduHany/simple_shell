@@ -11,22 +11,15 @@ int _readfile(char **argv)
 {
 	int fd = STDIN_FILENO;
 
-	if (access(argv[1], F_OK) == 0)
+	if (access(argv[1], R_OK) != -1)
 	{
-		if (access(argv[1], R_OK) == 0)
-			fd = open(argv[1], O_RDONLY);
-		else
-		{
-			file_not_readable(argv);
-			_freedouble(environ);
-			exit(2);
-		}
+		fd = open(argv[1], O_RDONLY);
 	}
 	else
 	{
 		file_not_found(argv);
 		_freedouble(environ);
-		exit(2);
+		exit(127);
 	}
 	return (fd);
 }
