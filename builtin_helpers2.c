@@ -1,6 +1,4 @@
 #include "shell.h"
-
-
 /* for: cd*/
 /**
  * switch_current_dir - switched between oldpwd and pwd
