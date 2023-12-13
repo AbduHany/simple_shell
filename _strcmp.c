@@ -18,7 +18,6 @@
  *
  * Return: 0 is they are equal, 1 if s1 is greater, -1 if s2 is greater
 */
-
 int _strcmp(char *s1, char *s2)
 {
 	int i, result, len_s1 = _strlen(s1), len_s2 = _strlen(s2);
