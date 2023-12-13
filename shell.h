@@ -37,11 +37,11 @@ int _strlen(char *str);
 char *_strcpy(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 int _strncmp(char *s1, char *s2, size_t n);
-char* _strcat(char *s1, char *s2);
+char *_strcat(char *s1, char *s2);
 void _putinterr(int linenum);
 int _atoi(char *s);
 char *_itoa(int num);
-char* _strdup(char *str);
+char *_strdup(char *str);
 int _hasalpha(char *str);
 
 /* environment variable functions */
@@ -60,13 +60,13 @@ void unset_env(char **args, int *exitstatus,  int linenum, char *prog);
 
 /* built in helpers*/
 void change_dir(char *dir);
-void set_pwd(char* dir);
-void set_oldpwd(char* dir);
-void set_oldpwd_overwrite(char* dir);
+void set_pwd(char *dir);
+void set_oldpwd(char *dir);
+void set_oldpwd_overwrite(char *dir);
 int is_directory(const char *path);
-void switch_current_dir();
-void go_to_home();
-void change_to_new_dir(int *exitstatus, char *dir_name, int linenum, char *prog, char **args);
+void switch_current_dir(void);
+void go_to_home(void);
+void change_to_new_dir(int *, char *dir, int linenum, char *prog, char **args);
 void print_path(char *tmp);
 
 /* memory functions */
