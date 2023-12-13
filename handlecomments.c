@@ -11,6 +11,8 @@ void handlecomments(char **args, int *exitstatus)
 	int i, j;
 
 	(void)exitstatus;
+	if (args == NULL)
+		return;
 	for (i = 0; args[i] != NULL; i++)
 	{
 		if (args[i][0] == '#')
