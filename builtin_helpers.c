@@ -31,6 +31,7 @@ int is_directory(const char *path)
 
 	return (S_ISDIR(statbuf.st_mode));
 }
+
 /**
  * print_path - priting a path
  * @tmp: the path to be printed
