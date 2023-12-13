@@ -18,6 +18,5 @@ char *_strdup(char *str)
 	{
 		copy[i] = str[i];
 	}
-
 	return (copy);
 }
